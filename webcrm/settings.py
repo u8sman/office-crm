@@ -45,7 +45,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://crm.power-devs.com",
 ]
 
-# Database – use Render's DATABASE_URL if present
+# Database – using discrete env vars (Aiven)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -67,6 +67,8 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="crm@example.com")
 EMAIL_PORT = env.int("EMAIL_PORT", default=587)
 EMAIL_SUBJECT_PREFIX = env("EMAIL_SUBJECT_PREFIX", default="CRM: ")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)
+EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT", default=10)
 
 SERVER_EMAIL = env("SERVER_EMAIL", default="test@example.com")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="test@example.com")
@@ -153,26 +155,36 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "common.utils.admin_redirect_middleware.AdminRedirectMiddleware",
     "common.utils.usermiddleware.UserMiddleware",
-    "django.middleware.cache.FetchFromCacheMiddleware",  # <-- MISSING COMMA FIXED
+    "django.middleware.cache.FetchFromCacheMiddleware",
 ]
 
 # Cache middleware config
 CACHE_MIDDLEWARE_SECONDS = env.int("CACHE_MIDDLEWARE_SECONDS", default=60)
 CACHE_MIDDLEWARE_KEY_PREFIX = env("CACHE_MIDDLEWARE_KEY_PREFIX", default="crm")
 
-# *** IMPORTANT ***
-# Upstash: django-redis needs a REDIS URL, not REST URL.
-# In Render env, set UPSTASH_REDIS_URL to the "Redis URL" from Upstash dashboard.
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env("UPSTASH_REDIS_URL"),  # e.g. redis://default:token@host:6379
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            # "PASSWORD" is already inside the URL
-        },
+# ---- CACHES (Upstash Redis with safety) ---- #
+redis_url_raw = env("UPSTASH_REDIS_URL", default="")
+# Remove possible wrapping quotes from Render/env
+redis_url = redis_url_raw.strip().strip('"').strip("'")
+
+if redis_url.startswith(("redis://", "rediss://", "unix://")):
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": redis_url,  # e.g. redis://default:token@host:6379
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            },
+        }
     }
-}
+else:
+    # Safety fallback so the app still works if env is wrong
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "crm-fallback-locmem",
+        }
+    }
 
 ROOT_URLCONF = "webcrm.urls"
 
@@ -246,9 +258,9 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 
 # For more security, replace the url prefixes
 # with your own unique value.
-SECRET_CRM_PREFIX = ''
-SECRET_ADMIN_PREFIX = 'admin/'
-SECRET_LOGIN_PREFIX = 'login/'
+SECRET_CRM_PREFIX = ""
+SECRET_ADMIN_PREFIX = "admin/"
+SECRET_LOGIN_PREFIX = "login/"
 
 # Specify ip of host to avoid importing emails sent by CRM
 CRM_IP = "74.220.48.0/24"
@@ -260,39 +272,52 @@ NOT_ALLOWED_EMAILS = []
 
 # List of applications on the main page and in the left sidebar.
 APP_ON_INDEX_PAGE = [
-    'tasks', 'crm', 'analytics',
-    'massmail', 'common', 'settings'
+    "tasks",
+    "crm",
+    "analytics",
+    "massmail",
+    "common",
+    "settings",
 ]
 MODEL_ON_INDEX_PAGE = {
-    'tasks': {
-        'app_model_list': ['Task', 'Memo']
+    "tasks": {
+        "app_model_list": ["Task", "Memo"]
     },
-    'crm': {
-        'app_model_list': [
-            'Request', 'Deal', 'Lead', 'Company',
-            'CrmEmail', 'Payment', 'Shipment'
+    "crm": {
+        "app_model_list": [
+            "Request",
+            "Deal",
+            "Lead",
+            "Company",
+            "CrmEmail",
+            "Payment",
+            "Shipment",
         ]
     },
-    'analytics': {
-        'app_model_list': [
-            'IncomeStat', 'RequestStat'
+    "analytics": {
+        "app_model_list": [
+            "IncomeStat",
+            "RequestStat",
         ]
     },
-    'massmail': {
-        'app_model_list': [
-            'MailingOut', 'EmlMessage'
+    "massmail": {
+        "app_model_list": [
+            "MailingOut",
+            "EmlMessage",
         ]
     },
-    'common': {
-        'app_model_list': [
-            'UserProfile', 'Reminder'
+    "common": {
+        "app_model_list": [
+            "UserProfile",
+            "Reminder",
         ]
     },
-    'settings': {
-        'app_model_list': [
-            'PublicEmailDomain', 'StopPhrase'
+    "settings": {
+        "app_model_list": [
+            "PublicEmailDomain",
+            "StopPhrase",
         ]
-    }
+    },
 }
 
 # Country VAT value
@@ -300,30 +325,30 @@ VAT = 0    # %
 
 # 2-Step Verification Credentials for Google Accounts.
 #  OAuth 2.0
-CLIENT_ID = ''
-CLIENT_SECRET = ''
+CLIENT_ID = ""
+CLIENT_SECRET = ""
 OAUTH2_DATA = {
-    'smtp.gmail.com': {
-        'scope': "https://mail.google.com/",
-        'accounts_base_url': 'https://accounts.google.com',
-        'auth_command': 'o/oauth2/auth',
-        'token_command': 'o/oauth2/token',
+    "smtp.gmail.com": {
+        "scope": "https://mail.google.com/",
+        "accounts_base_url": "https://accounts.google.com",
+        "auth_command": "o/oauth2/auth",
+        "token_command": "o/oauth2/token",
     }
 }
 # Hardcoded dummy redirect URI for non-web apps.
-REDIRECT_URI = ''
+REDIRECT_URI = ""
 
 # Credentials for Google reCAPTCHA.
-GOOGLE_RECAPTCHA_SITE_KEY = ''
-GOOGLE_RECAPTCHA_SECRET_KEY = ''
+GOOGLE_RECAPTCHA_SITE_KEY = ""
+GOOGLE_RECAPTCHA_SECRET_KEY = ""
 
 GEOIP = False
-GEOIP_PATH = MEDIA_ROOT / 'geodb'
+GEOIP_PATH = MEDIA_ROOT / "geodb"
 
 # For user profile list
 SHOW_USER_CURRENT_TIME_ZONE = False
 
-NO_NAME_STR = _('Untitled')
+NO_NAME_STR = _("Untitled")
 
 # For automated getting currency exchange rate
 LOAD_EXCHANGE_RATE = False
@@ -334,10 +359,10 @@ LOAD_RATE_BACKEND = ""  # "crm.backends.<specify_backend>.<specify_class>"
 MARK_PAYMENTS_THROUGH_REP = False
 
 # Site headers
-SITE_TITLE = 'CRM'
+SITE_TITLE = "CRM"
 ADMIN_HEADER = "ADMIN"
 ADMIN_TITLE = "CRM Admin"
-INDEX_TITLE = _('Main Menu')
+INDEX_TITLE = _("Main Menu")
 
 # Allow mailing
 MAILING = True
@@ -347,21 +372,11 @@ COPYRIGHT_STRING = f"Django-CRM. Copyright (c) {dt.now().year}"
 PROJECT_NAME = "Django-CRM"
 PROJECT_SITE = "https://djangocrm.github.io/info/"
 
-
-TESTING = sys.argv[1:2] == ['test']
+TESTING = sys.argv[1:2] == ["test"]
 if TESTING:
     SECURE_SSL_REDIRECT = False
-    LANGUAGE_CODE = 'en'
-    LANGUAGES = [('en', ''), ('uk', '')]
-
-
-
-
-# for local only remove in production
-STATICFILES_DIRS = [
-    BASE_DIR / "static_custom",
-]
-
+    LANGUAGE_CODE = "en"
+    LANGUAGES = [("en", ""), ("uk", "")]
 
 
 # settings.py
