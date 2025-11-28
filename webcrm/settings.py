@@ -359,9 +359,9 @@ if TESTING:
 
 
 # for local only remove in production
-STATICFILES_DIRS = [
-    BASE_DIR / "static_custom",
-]
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static_custom",
+# ]
 
 
 
