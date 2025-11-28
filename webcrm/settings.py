@@ -4,229 +4,244 @@ from datetime import datetime as dt
 from django.utils.translation import gettext_lazy as _
 import environ
 import os
+
 from crm.settings import *          # NOQA
 from common.settings import *       # NOQA
 from tasks.settings import *        # NOQA
 from voip.settings import *         # NOQA
 from .datetime_settings import *    # NOQA
+
 # ---- Django settings ---- #
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Env
+env = environ.Env(
+    DEBUG=(bool, False),
+)
 
-
-# Initialize environment reader
-env = environ.Env()
-
-# Path to .env file
+# Read .env only locally; Render will inject real env vars
 env_file = os.path.join(BASE_DIR, ".env")
-
 if os.path.exists(env_file):
     environ.Env.read_env(env_file)
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# To get new value of key use code:
-# from django.core.management.utils import get_random_secret_key
-# print(get_random_secret_key())
-SECRET_KEY = 'j1c=6$s-dh#$ywt@(q4cm=j&0c*!0x!e-qm6k1%yoliec(15tn'
+# SECURITY WARNING: don’t hardcode this in production!
+SECRET_KEY = env(
+    "SECRET_KEY",
+    default="dev-only-secret-key-change-me"
+)
 
-# Add your hosts to the list.
-ALLOWED_HOSTS = ['127.0.0.1', 'office-crm.onrender.com', 'crm.power-devs.com']
+# Debug controlled via env
+DEBUG = env.bool("DEBUG", default=False)
 
-# Database
+# Hosts
+ALLOWED_HOSTS = env.list(
+    "ALLOWED_HOSTS",
+    default=["127.0.0.1", "office-crm.onrender.com", "crm.power-devs.com"]
+)
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://office-crm.onrender.com",
+    "https://crm.power-devs.com",
+]
+
+# Database – use Render's DATABASE_URL if present
 DATABASES = {
+    "default": env.db(
+        "DATABASE_URL",
+        default={
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("DB_NAME", default="defaultdb"),
+            "USER": env("DB_USER", default="avnadmin"),
+            "PASSWORD": env("DB_PASSWORD", default=""),
+            "HOST": env("DB_HOST", default="localhost"),
+            "PORT": env("DB_PORT", default="5432"),
+            "OPTIONS": {"sslmode": "require"},
+        },
+    )
+}
+
+# Email (move secrets to env)
+EMAIL_HOST = env("EMAIL_HOST", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="crm@example.com")
+EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+EMAIL_SUBJECT_PREFIX = env("EMAIL_SUBJECT_PREFIX", default="CRM: ")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+
+SERVER_EMAIL = env("SERVER_EMAIL", default="test@example.com")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="test@example.com")
+
+ADMINS = [
+    (env("ADMIN_NAME", default="Admin"), env("ADMIN_EMAIL", default="u8sman@gmail.com"))
+]
+
+# Internationalization
+LANGUAGE_CODE = "en"
+LANGUAGES = [
+    ("ar", "Arabic"),
+    ("cs", "Czech"),
+    ("de", "German"),
+    ("el", "Greek"),
+    ("en", "English"),
+    ("es", "Spanish"),
+    ("fr", "French"),
+    ("he", "Hebrew"),
+    ("hi", "Hindi"),
+    ("id", "Indonesian"),
+    ("it", "Italian"),
+    ("ja", "Japanese"),
+    ("ko", "Korean"),
+    ("nl", "Nederlands"),
+    ("pl", "Polish"),
+    ("pt-br", "Portuguese"),
+    ("ro", "Romanian"),
+    ("ru", "Russian"),
+    ("tr", "Turkish"),
+    ("uk", "Ukrainian"),
+    ("vi", "Vietnamese"),
+    ("zh-hans", "Chinese"),
+]
+
+TIME_ZONE = "Asia/Karachi"
+USE_I18N = True
+USE_TZ = True
+
+LOCALE_PATHS = [BASE_DIR / "locale"]
+
+LOGIN_URL = "/admin/login/"
+
+INSTALLED_APPS = [
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.inlines",
+    "unfold.contrib.import_export",
+    "unfold.contrib.guardian",
+    "unfold.contrib.simple_history",
+    "unfold.contrib.location_field",
+    "unfold.contrib.constance",
+
+    "django.contrib.sites",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    "crm.apps.CrmConfig",
+    "massmail.apps.MassmailConfig",
+    "analytics.apps.AnalyticsConfig",
+    "help",
+    "tasks.apps.TasksConfig",
+    "chat.apps.ChatConfig",
+    "voip",
+    "common.apps.CommonConfig",
+    "settings",
+]
+
+MIDDLEWARE = [
+    "django.middleware.cache.UpdateCacheMiddleware",  # cache whole-page (optional)
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",    # for static on Render
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "common.utils.admin_redirect_middleware.AdminRedirectMiddleware",
+    "common.utils.usermiddleware.UserMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",  # <-- MISSING COMMA FIXED
+]
+
+# Cache middleware config
+CACHE_MIDDLEWARE_SECONDS = env.int("CACHE_MIDDLEWARE_SECONDS", default=60)
+CACHE_MIDDLEWARE_KEY_PREFIX = env("CACHE_MIDDLEWARE_KEY_PREFIX", default="crm")
+
+# *** IMPORTANT ***
+# Upstash: django-redis needs a REDIS URL, not REST URL.
+# In Render env, set UPSTASH_REDIS_URL to the "Redis URL" from Upstash dashboard.
+CACHES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DB_NAME", default="defaultdb"),
-        "USER": env("DB_USER", default="avnadmin"),
-        "PASSWORD": env("DB_PASSWORD", default=""),
-        "HOST": env("DB_HOST", default="localhost"),
-        "PORT": env("DB_PORT", default="5432"),
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env("UPSTASH_REDIS_URL"),  # e.g. redis://default:token@host:6379
         "OPTIONS": {
-            "sslmode": "require",
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            # "PASSWORD" is already inside the URL
         },
     }
 }
 
-
-
-EMAIL_HOST = '<specify host>'   # 'smtp.example.com'
-EMAIL_HOST_PASSWORD = '<specify password>'
-EMAIL_HOST_USER = 'crm@example.com'
-EMAIL_PORT = 587
-EMAIL_SUBJECT_PREFIX = 'CRM: '
-EMAIL_USE_TLS = True
-
-SERVER_EMAIL = 'test@example.com'
-DEFAULT_FROM_EMAIL = 'test@example.com'
-
-ADMINS = [("<Admin1>", "<admin1_box@example.com>")]   # specify admin
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-FORMS_URLFIELD_ASSUME_HTTPS = True
-
-# Internationalization
-LANGUAGE_CODE = 'en'
-LANGUAGES = [
-    ('ar', 'Arabic'),
-    ('cs', 'Czech'),
-    ('de', 'German'),
-    ('el', 'Greek'),
-    ('en', 'English'),
-    ('es', 'Spanish'),
-    ('fr', 'French'),
-    ('he', 'Hebrew'),
-    ('hi', 'Hindi'),
-    ('id', 'Indonesian'),
-    ('it', 'Italian'),
-    ('ja', 'Japanese'),
-    ('ko', 'Korean'),
-    ('nl', 'Nederlands'),
-    ('pl', 'Polish'),
-    ('pt-br', 'Portuguese'),
-    ('ro', 'Romanian'),
-    ('ru', 'Russian'),
-    ('tr', 'Turkish'),
-    ('uk', 'Ukrainian'),
-    ('vi', 'Vietnamese'),
-    ('zh-hans', 'Chinese'),
-]
-
-TIME_ZONE = 'Asia/Karachi'   # specify your time zone
-
-USE_I18N = True
-
-USE_TZ = True
-
-LOCALE_PATHS = [
-    BASE_DIR / 'locale',
-]
-
-LOGIN_URL = '/admin/login/'
-
-# Application definition
-INSTALLED_APPS = [
-    "unfold",  # <--- important
-    "unfold.contrib.filters",  # optional
-    "unfold.contrib.forms",  # optional
-    "unfold.contrib.inlines",  # optional
-    "unfold.contrib.import_export",  # optional
-    "unfold.contrib.guardian",  # optional
-    "unfold.contrib.simple_history",  # optional
-    "unfold.contrib.location_field",  # optional
-    "unfold.contrib.constance",  # optional
-
-    'django.contrib.sites',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'crm.apps.CrmConfig',
-    'massmail.apps.MassmailConfig',
-    'analytics.apps.AnalyticsConfig',
-    'help',
-    'tasks.apps.TasksConfig',
-    'chat.apps.ChatConfig',
-    'voip',
-    'common.apps.CommonConfig',
-    'settings'
-
-]
-
-MIDDLEWARE = [
-    "django.middleware.cache.UpdateCacheMiddleware",
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'common.utils.admin_redirect_middleware.AdminRedirectMiddleware',
-    'common.utils.usermiddleware.UserMiddleware'
-    "django.middleware.cache.FetchFromCacheMiddleware",
-]
-
-CACHE_MIDDLEWARE_SECONDS = 60  # cache all pages for 60s (change as needed)
-CACHE_MIDDLEWARE_KEY_PREFIX = ""
-
-
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env("UPSTASH_REDIS_REST_URL"),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "PASSWORD": env("UPSTASH_REDIS_REST_TOKEN"),
-        }
-    }
-}
-
-
-
-ROOT_URLCONF = 'webcrm.urls'
+ROOT_URLCONF = "webcrm.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'webcrm.wsgi.application'
+WSGI_APPLICATION = "webcrm.wsgi.application"
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'
-    }
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
+# Static / Media
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "static"
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
-FIXTURE_DIRS = ['tests/fixtures']
+# WhiteNoise – efficient static serving on Render
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+# Local-only extra static folders
+if DEBUG:
+    STATICFILES_DIRS = [
+        BASE_DIR / "static_custom",
+    ]
+
+FIXTURE_DIRS = ["tests/fixtures"]
+
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 SITE_ID = 1
 
-SECURE_HSTS_SECONDS = 0  # set to 31536000 for the production server
-# Set all the following to True for the production server
-SECURE_HSTS_INCLUDE_SUBDOMAINS = False
-SECURE_SSL_REDIRECT = False
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
-SECURE_HSTS_PRELOAD = False
+# Security – stricter in production
+if not DEBUG:
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+else:
+    SECURE_HSTS_SECONDS = 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+
 X_FRAME_OPTIONS = "SAMEORIGIN"
+
 
 # ---- CRM settings ---- #
 
@@ -237,9 +252,9 @@ SECRET_ADMIN_PREFIX = 'admin/'
 SECRET_LOGIN_PREFIX = 'login/'
 
 # Specify ip of host to avoid importing emails sent by CRM
-CRM_IP = "127.0.0.1"
+CRM_IP = "74.220.48.0/24"
 
-CRM_REPLY_TO = ["'Do not reply' <crm@example.com>"]
+CRM_REPLY_TO = ["'Do not reply' <noreply@power-devs.com>"]
 
 # List of addresses to which users are not allowed to send mail.
 NOT_ALLOWED_EMAILS = []
