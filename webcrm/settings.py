@@ -32,7 +32,7 @@ if os.path.exists(env_file):
 SECRET_KEY = 'j1c=6$s-dh#$ywt@(q4cm=j&0c*!0x!e-qm6k1%yoliec(15tn'
 
 # Add your hosts to the list.
-ALLOWED_HOSTS = ['127.0.0.1', 'https://office-crm.onrender.com/', 'https://crm.power-devs.com/']
+ALLOWED_HOSTS = ['127.0.0.1', 'office-crm.onrender.com', 'crm.power-devs.com']
 
 # Database
 DATABASES = {
