@@ -47,18 +47,17 @@ CSRF_TRUSTED_ORIGINS = [
 
 # Database – use Render's DATABASE_URL if present
 DATABASES = {
-    "default": env.db(
-        "DATABASE_URL",
-        default={
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("DB_NAME", default="defaultdb"),
-            "USER": env("DB_USER", default="avnadmin"),
-            "PASSWORD": env("DB_PASSWORD", default=""),
-            "HOST": env("DB_HOST", default="localhost"),
-            "PORT": env("DB_PORT", default="5432"),
-            "OPTIONS": {"sslmode": "require"},
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("DB_NAME", default="defaultdb"),
+        "USER": env("DB_USER", default="avnadmin"),
+        "PASSWORD": env("DB_PASSWORD", default=""),
+        "HOST": env("DB_HOST", default="localhost"),
+        "PORT": env("DB_PORT", default="5432"),
+        "OPTIONS": {
+            "sslmode": "require",
         },
-    )
+    }
 }
 
 # Email (move secrets to env)
@@ -359,9 +358,9 @@ if TESTING:
 
 
 # for local only remove in production
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static_custom",
-# ]
+STATICFILES_DIRS = [
+    BASE_DIR / "static_custom",
+]
 
 
 
