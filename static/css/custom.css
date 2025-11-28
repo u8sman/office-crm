@@ -1,0 +1,263 @@
+/************************************************************
+ * Unfold-style action buttons for CRM object-tools
+ * Works with <div class="object-tools"><li><a>…</a></li></div>
+ ************************************************************/
+
+/* Ensure proper layout & alignment */
+.change-form .object-tools,
+.change-list .object-tools {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+
+    margin: 0;
+    padding: 1rem 2.5rem;
+
+    list-style: none;
+}
+
+/* Clean LI wrapper */
+.change-form .object-tools > li,
+.change-list .object-tools > li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Base button style for links */
+.change-form .object-tools a,
+.change-list .object-tools a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+
+    padding: 0.45rem 0.9rem;
+    border-radius: 0.5rem;
+
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+
+    border: 1px solid var(--color-base-300);
+    background-color: var(--color-base-50);
+    color: var(--color-font-default-light);
+
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        color 120ms ease,
+        transform 80ms ease;
+}
+
+/* Hover ghost button */
+.change-form .object-tools a:hover,
+.change-list .object-tools a:hover {
+    background-color: var(--color-base-100);
+    border-color: var(--color-base-400);
+}
+
+/************************************************************
+ * PRIMARY button (Unfold purple)
+ ************************************************************/
+
+.change-form .object-tools a.addlink,
+.change-list .object-tools a.addlink {
+    background-color: var(--color-primary-600);
+    border-color: var(--color-primary-600);
+    color: #ffffff;
+}
+
+.change-form .object-tools a.addlink:hover,
+.change-list .object-tools a.addlink:hover {
+    background-color: var(--color-primary-700);
+    border-color: var(--color-primary-700);
+}
+
+/************************************************************
+ * Icon inside “Transfer of a manager”
+ ************************************************************/
+
+.change-form .object-tools a i.material-icons,
+.change-list .object-tools a i.material-icons {
+    font-size: 18px;
+    vertical-align: middle;
+    line-height: 1;
+    display: none;
+}
+
+
+/************************************************************
+ * Pretty filters for <details data-filter-title="...">
+ ************************************************************/
+
+/* Outer filter block */
+details[data-filter-title] {
+    margin: 0 0 0.75rem 0;
+    padding: 0;
+    border-radius: 0.5rem;
+    border: 1px solid var(--form-border-color);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    overflow: hidden;
+}
+
+/* Summary header */
+details[data-filter-title] > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0.5rem 0.75rem;
+    list-style: none;
+    cursor: pointer;
+
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--form-text);
+}
+
+/* Remove default marker and add custom chevron */
+details[data-filter-title] > summary::-webkit-details-marker {
+    display: none;
+}
+details[data-filter-title] > summary::marker {
+    content: "";
+}
+
+details[data-filter-title] > summary::after {
+    content: "▾";
+    font-size: 0.7rem;
+    color: var(--form-text-muted);
+    margin-left: 0.35rem;
+    transition: transform 120ms ease;
+}
+
+/* Rotate chevron when open */
+details[data-filter-title][open] > summary::after {
+    transform: rotate(180deg);
+}
+
+/* List body */
+details[data-filter-title] > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem 0.5rem 0.6rem;
+}
+
+/* Each option row */
+details[data-filter-title] > ul > li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Standard link style */
+details[data-filter-title] > ul > li > a {
+    display: block;
+    padding: 0.25rem 0.4rem;
+    border-radius: 0.35rem;
+
+    font-size: 0.78rem;
+    color: var(--form-text-muted);
+    text-decoration: none;
+
+    transition:
+        background-color 120ms ease,
+        color 120ms ease;
+}
+
+/* Hover */
+details[data-filter-title] > ul > li > a:hover {
+    background-color: var(--form-bg-light);
+    color: var(--form-text);
+}
+
+/* Selected option */
+details[data-filter-title] > ul > li.selected > a {
+    background-color: var(--brand-purple);
+    color: #ffffff;
+}
+
+/************************************************************
+ * "Specify dates" section
+ ************************************************************/
+
+details[data-filter-title] .justify-container {
+    margin-top: 0.4rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--form-bg-light);
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+details[data-filter-title] .justify-row {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    color: var(--form-text-muted);
+}
+
+/* Labels inside custom range */
+details[data-filter-title] .justify-row label {
+    font-size: 0.75rem;
+    color: var(--form-text-muted);
+}
+
+/* Inputs inside filter form */
+details[data-filter-title] input[type="text"],
+details[data-filter-title] input[type="date"],
+details[data-filter-title] input[type="search"] {
+    border-radius: 0.35rem;
+    border: 1px solid var(--form-border-color);
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+    width: 6.5rem;
+
+    background-color: var(--form-bg-muted);
+    color: var(--form-text);
+
+    transition:
+        border-color 120ms ease,
+        background-color 120ms ease,
+        box-shadow 120ms ease;
+}
+
+details[data-filter-title] input[type="text"]:focus {
+    outline: none;
+    border-color: var(--form-border-color-focus);
+    box-shadow: 0 0 0 1px rgba(59,130,246,0.25);
+}
+
+/* Submit button */
+details[data-filter-title] input[type="submit"] {
+    margin-left: auto;
+    border-radius: 999px;
+    border: 1px solid var(--brand-purple);
+    background-color: var(--brand-purple);
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.75rem;
+    cursor: pointer;
+
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        transform 60ms ease;
+}
+
+details[data-filter-title] input[type="submit"]:hover {
+    background-color: var(--brand-purple-dark);
+    border-color: var(--brand-purple-dark);
+}
+
+details[data-filter-title] input[type="submit"]:active {
+    transform: translateY(1px);
+}
+
+/* Tiny helper text "(YYYY-MM-DD)" */
+details[data-filter-title] .justify-row:first-child + .justify-row + .justify-row {
+    font-size: 0.7rem;
+    color: var(--form-text-muted);
+}

@@ -139,6 +139,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "django.middleware.cache.UpdateCacheMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -149,7 +150,25 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'common.utils.admin_redirect_middleware.AdminRedirectMiddleware',
     'common.utils.usermiddleware.UserMiddleware'
+    "django.middleware.cache.FetchFromCacheMiddleware",
 ]
+
+CACHE_MIDDLEWARE_SECONDS = 60  # cache all pages for 60s (change as needed)
+CACHE_MIDDLEWARE_KEY_PREFIX = ""
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env("UPSTASH_REDIS_REST_URL"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": env("UPSTASH_REDIS_REST_TOKEN"),
+        }
+    }
+}
+
+
 
 ROOT_URLCONF = 'webcrm.urls'
 
@@ -359,11 +378,12 @@ UNFOLD = {
     "SHOW_BACK_BUTTON": True,
 
     # optional theme
-    "THEME": "light",  # or "light" / "dark"
+    "THEME": None,  # or "light" / "dark"
     "BORDER_RADIUS": "8px",
 
     "STYLES": [
         lambda request: static("css/custom-forms.css"),
+        lambda request: static("css/custom.css"),
     ],
 
     # "STYLES": [

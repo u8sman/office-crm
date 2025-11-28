@@ -29,4 +29,6 @@
     django-unfold
     django-environ
     gunicorn
+    redis
+    django-redis
 
