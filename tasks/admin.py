@@ -1,4 +1,5 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin
 from django.utils.translation import gettext_lazy as _
 
 from common.utils.for_translation import check_for_translation
@@ -16,7 +17,7 @@ from tasks.site import taskadmin
 from tasks.site.tagadmin import TagAdmin
 
 
-class TranslateNameModelAdmin(admin.ModelAdmin):
+class TranslateNameModelAdmin(ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)

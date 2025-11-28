@@ -1,6 +1,7 @@
 import re
 from django import forms
 from django.contrib import admin
+from unfold.admin import ModelAdmin
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.db.models import Q
 from django.forms import ModelForm
@@ -17,7 +18,7 @@ from crm.site.crmadminsite import crm_site
 from crm.utils.admfilters import ScrollRelatedOnlyFieldListFilter
 
 
-class DepartmentAdmin(admin.ModelAdmin):
+class DepartmentAdmin(ModelAdmin):
     list_display = ('name',)
     fieldsets = (
         (None, {
@@ -32,7 +33,7 @@ class DepartmentAdmin(admin.ModelAdmin):
     )
 
 
-class LogEntrytAdmin(admin.ModelAdmin):
+class LogEntrytAdmin(ModelAdmin):
     list_display = ("__str__", "user", "content_type",
                     "action_time", 'object_id')
     list_display_links = ("__str__",)
@@ -61,7 +62,7 @@ class LogEntrytAdmin(admin.ModelAdmin):
         return False
 
 
-class ReminderAdmin(admin.ModelAdmin):
+class ReminderAdmin(ModelAdmin):
     list_display = (
         'subject',
         'reminder_date',
@@ -124,7 +125,7 @@ class TheFileForm(ModelForm):
         return self.instance
 
 
-class TheFileAdmin(admin.ModelAdmin):
+class TheFileAdmin(ModelAdmin):
     form = TheFileForm
     list_display = ('id', 'content_type', 'object_id',
                     'to_object', 'file_name')

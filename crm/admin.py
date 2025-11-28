@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
+from unfold.admin import ModelAdmin
 from django.contrib.admin.options import BaseModelAdmin
 from django.db.models import F
 from django.contrib.auth.models import Group
@@ -46,7 +47,7 @@ from crm.utils.admfilters import ByDepartmentFilter
 admin.site.empty_value_display = '(None)'
 
 
-class MyModelAdmin(admin.ModelAdmin):
+class MyModelAdmin(ModelAdmin):
     list_filter = (ByDepartmentFilter,)
 
     # -- ModelAdmin methods -- #
@@ -240,7 +241,7 @@ class ContactAdmin(contactadmin.ContactAdmin):
         )
 
 
-class CountryAdmin(admin.ModelAdmin):
+class CountryAdmin(ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
 
@@ -294,7 +295,7 @@ class LeadAdmin(leadadmin.LeadAdmin):
         )
 
 
-class CrmEmailAdmin(admin.ModelAdmin):
+class CrmEmailAdmin(ModelAdmin):
     empty_value_display = LEADERS
     raw_id_fields = (
         'deal',
@@ -437,7 +438,7 @@ class LeadSourceAdmin(TranslateNameModelAdmin):
         return obj.email
 
 
-class RateAdmin(admin.ModelAdmin):
+class RateAdmin(ModelAdmin):
     list_display = (
         'currency', 'payment_date',
         'rate_to_state_currency',

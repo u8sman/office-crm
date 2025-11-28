@@ -1,6 +1,7 @@
 import threading
 from django import forms
 from django.contrib import admin
+from unfold.admin import ModelAdmin
 from django.contrib.auth.models import Group
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
@@ -79,7 +80,7 @@ class ParagraphInline(admin.StackedInline):
         )
 
 
-class PageAdmin(admin.ModelAdmin):
+class PageAdmin(ModelAdmin):
     empty_value_display = LEADERS
     inlines = [ParagraphInline]
     list_display = (
@@ -135,7 +136,7 @@ class PageAdmin(admin.ModelAdmin):
         formset.save_m2m()
 
 
-class ParagraphAdmin(admin.ModelAdmin):
+class ParagraphAdmin(ModelAdmin):
     class Media:
         js = (
             '/static/common/js/vendor/nicEdit.js',

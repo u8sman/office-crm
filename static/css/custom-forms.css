@@ -1,0 +1,557 @@
+/************************************************************
+ * Base tokens – STATIC HEX COLORS (no Unfold variables)
+ ************************************************************/
+
+:root {
+    /* Radii */
+    --form-radius: 8px;
+
+    /* Borders */
+    --form-border-color: rgba(235, 230, 231); /* base border */
+    --form-border-color-hover: #bec1c8;            /* hover border */
+    --form-border-color-focus: #3B82F6;            /* blue-500 */
+    --form-border-color-error: #EF4444;            /* red-500 */
+
+    /* Backgrounds */
+    --form-bg: #FFFFFF;                   /* white */
+    --form-bg-muted: rgba(249, 250, 251, 0.5); /* light bg */
+    --form-bg-light: rgba(243, 244, 246, 0.5); /* slightly darker bg */
+
+    /* Text */
+    --form-text: #111827;                 /* gray-900 */
+    --form-text-muted: #6B7280;           /* gray-500 */
+    --form-placeholder: #9CA3AF;          /* gray-400 */
+
+    /* Shadows */
+    --form-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    /* Spacing + sizes */
+    --form-padding-y: 0.5rem;
+    --form-padding-x: 0.75rem;
+    --form-font-size: 0.875rem;
+    --form-line-height: 1.5;
+
+    /* Accent brand color (purple theme) */
+    --brand-purple: #9710FA;
+    --brand-purple-dark: #7d0bd7;
+}
+
+/************************************************************
+ * Dark mode tokens – override for .dark context
+ ************************************************************/
+
+.dark {
+    --form-border-color: #1b2027;         /* gray-700 */
+    --form-border-color-hover: #4B5563;   /* gray-600 */
+    --form-border-color-focus: #60A5FA;   /* blue-400 */
+    --form-border-color-error: #FCA5A5;   /* red-300 */
+
+    --form-bg: #020617;                   /* slate-950 */
+    --form-bg-muted: #020617;             /* same dark */
+    --form-bg-light: #0B1120;             /* navy-ish */
+
+    --form-text: #F9FAFB;                 /* gray-50 */
+    --form-text-muted: #9CA3AF;           /* gray-400 */
+    --form-placeholder: #6B7280;          /* gray-500 */
+
+    --form-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/************************************************************
+ * Layout for rows and lines
+ ************************************************************/
+
+.aligned {
+    background-color: var(--form-bg);
+}
+
+.aligned .field-row.form-row,
+.aligned .field-row {
+    border-bottom: 1px solid var(--form-bg-light);
+}
+
+.aligned .field-row.last {
+    border-bottom: none;
+}
+
+.aligned .field-line {
+    gap: 0.25rem;
+}
+
+/************************************************************
+ * Align inner flex rows (e.g. checkbox row) with center
+ ************************************************************/
+
+/* For rows where you have: <div class="field-line ..."><div class="flex ..."> */
+.aligned .field-line > .flex {
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/************************************************************
+ * Labels
+ ************************************************************/
+
+.aligned label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--form-text-muted);
+}
+
+.aligned label.inline,
+.aligned .vCheckboxLabel.inline {
+    display: inline-flex;
+}
+
+.aligned label.required::after {
+    content: "*";
+    color: #DC2626; /* red-600 */
+    margin-left: 0.15rem;
+    font-size: 0.75em;
+}
+
+/************************************************************
+ * Generic form controls – more visible borders / background
+ ************************************************************/
+
+.aligned input[type="text"],
+.aligned input[type="email"],
+.aligned input[type="number"],
+.aligned input[type="password"],
+.aligned input[type="url"],
+.aligned input[type="tel"],
+.aligned input[type="search"],
+.aligned input[type="datetime-local"],
+.aligned input[type="date"],
+.aligned input[type="time"],
+.aligned input[type="month"],
+.aligned input[type="week"],
+.aligned textarea,
+.aligned select,
+.aligned .vDateField,
+.aligned .vLargeTextField {
+    width: 100%;
+    display: block;
+    border-radius: var(--form-radius);
+    border: 1px solid var(--form-border-color);
+    background-color: var(--form-bg-muted);  /* light/dark via vars */
+    padding: var(--form-padding-y) var(--form-padding-x);
+    font-size: var(--form-font-size);
+    line-height: var(--form-line-height);
+    color: var(--form-text);
+    outline: none;
+    box-shadow: var(--form-shadow);
+    transition:
+        border-color 120ms ease,
+        box-shadow 120ms ease,
+        background-color 120ms ease,
+        transform 60ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.aligned input::placeholder,
+.aligned textarea::placeholder {
+    color: var(--form-placeholder);
+}
+
+/* Hover state */
+.aligned input[type="text"]:hover,
+.aligned input[type="email"]:hover,
+.aligned input[type="number"]:hover,
+.aligned input[type="password"]:hover,
+.aligned input[type="url"]:hover,
+.aligned input[type="tel"]:hover,
+.aligned input[type="search"]:hover,
+.aligned input[type="datetime-local"]:hover,
+.aligned input[type="date"]:hover,
+.aligned input[type="time"]:hover,
+.aligned input[type="month"]:hover,
+.aligned input[type="week"]:hover,
+.aligned textarea:hover,
+.aligned select:hover,
+.aligned .vDateField:hover,
+.aligned .vLargeTextField:hover {
+    border-color: var(--form-border-color-hover);
+}
+
+/* Focus state – turns main bg + primary border */
+.aligned input[type="text"]:focus,
+.aligned input[type="email"]:focus,
+.aligned input[type="number"]:focus,
+.aligned input[type="password"]:focus,
+.aligned input[type="url"]:focus,
+.aligned input[type="tel"]:focus,
+.aligned input[type="search"]:focus,
+.aligned input[type="datetime-local"]:focus,
+.aligned input[type="date"]:focus,
+.aligned input[type="time"]:focus,
+.aligned input[type="month"]:focus,
+.aligned input[type="week"]:focus,
+.aligned textarea:focus,
+.aligned select:focus,
+.aligned .vDateField:focus,
+.aligned .vLargeTextField:focus {
+    border-color: var(--form-border-color-focus);
+    box-shadow:
+        0 0 0 1px rgba(59, 130, 246, 0.35),
+        var(--form-shadow);
+    background-color: var(--form-bg);
+}
+
+/* Disabled / readonly */
+.aligned input[disabled],
+.aligned select[disabled],
+.aligned textarea[disabled],
+.aligned input[readonly],
+.aligned textarea[readonly] {
+    background-color: var(--form-bg-light);
+    color: var(--form-text-muted);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/************************************************************
+ * Textareas
+ ************************************************************/
+
+.aligned textarea,
+.aligned .vLargeTextField {
+    min-height: 5rem;
+    resize: vertical;
+}
+
+/************************************************************
+ * Selects (including foreign key dropdowns)
+ ************************************************************/
+
+.aligned select {
+    padding-right: 2.25rem; /* space for arrow */
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0.7rem 0.7rem;
+    /* simple SVG arrow */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.5 7.5L10 12l4.5-4.5' stroke='%239CA3AF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.aligned .related-widget-wrapper select {
+    width: 100%;
+}
+
+/************************************************************
+ * Date inputs & shortcuts
+ ************************************************************/
+
+.aligned p.date {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+}
+
+.aligned .datetimeshortcuts {
+    margin-right: 25px;
+    white-space: nowrap;
+    color: var(--form-text-muted);
+}
+
+.aligned .datetimeshortcuts a {
+    text-decoration: none;
+    color: var(--form-border-color-focus);
+}
+
+.aligned .datetimeshortcuts a:hover {
+    text-decoration: underline;
+}
+
+/* Optional date icon wrapper */
+.aligned .date-icon {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 999px;
+}
+
+/************************************************************
+ * Checkboxes (e.g., "Hide main task") – custom look
+ ************************************************************/
+
+.aligned input[type="checkbox"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 1.05rem;
+    height: 1.05rem;
+    border-radius: 0.35rem;
+    border: 1px solid var(--form-border-color);
+    background-color: var(--form-bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    margin-right: 0.4rem;
+    cursor: pointer;
+    transition:
+        border-color 120ms ease,
+        background-color 120ms ease,
+        box-shadow 120ms ease,
+        transform 60ms ease;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.01);
+}
+
+/* Hover */
+.aligned input[type="checkbox"]:hover {
+    border-color: var(--form-border-color-hover);
+}
+
+/* Focus ring */
+.aligned input[type="checkbox"]:focus-visible {
+    outline: none;
+    box-shadow:
+        0 0 0 2px rgba(59, 130, 246, 0.4);
+    border-color: var(--form-border-color-focus);
+}
+
+/* Checked state with SVG checkmark */
+.aligned input[type="checkbox"]:checked {
+    background-color: var(--brand-purple);
+    border-color: var(--brand-purple);
+}
+
+.aligned input[type="checkbox"]:checked::after {
+    content: "";
+    width: 0.7rem;
+    height: 0.7rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 0.7rem 0.7rem;
+    /* white check icon */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='none'%3E%3Cpath d='M5 10.5L8.5 14 15 6' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.aligned .vCheckboxLabel {
+    font-size: 0.85rem;
+    color: var(--form-text);
+    cursor: pointer;
+}
+
+.aligned .field-line {
+    align-self: center;
+}
+
+
+/************************************************************
+ * Radio buttons (Stage) – custom circular controls
+ ************************************************************/
+
+.aligned input[type="radio"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 1.05rem;
+    height: 1.05rem;
+    border-radius: 999px;
+    border: 1px solid var(--form-border-color);
+    background-color: var(--form-bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.35rem;
+    cursor: pointer;
+    transition:
+        border-color 120ms ease,
+        background-color 120ms ease,
+        box-shadow 120ms ease,
+        transform 60ms ease;
+}
+
+/* Hover */
+.aligned input[type="radio"]:hover {
+    border-color: var(--form-border-color-hover);
+}
+
+/* Focus ring */
+.aligned input[type="radio"]:focus-visible {
+    outline: none;
+    box-shadow:
+        0 0 0 2px rgba(59, 130, 246, 0.4);
+    border-color: var(--form-border-color-focus);
+}
+
+/* Checked – inner dot */
+.aligned input[type="radio"]:checked {
+    border-color: var(--brand-purple);
+    background-color: var(--form-bg);
+}
+
+.aligned input[type="radio"]:checked::after {
+    content: "";
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: var(--brand-purple);
+}
+
+/* Layout of Stage options */
+.aligned .radiolist.inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin-top: 0.25rem;
+}
+
+.aligned .radiolist.inline > div {
+    display: inline-flex;
+    align-items: center;
+}
+
+.aligned .radiolist.inline label {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--form-text);
+    cursor: pointer;
+}
+
+/************************************************************
+ * File input (file chooser) – purple button with icon
+ ************************************************************/
+
+.aligned input[type="file"] {
+    font-size: 0.8rem;
+    color: var(--form-text-muted);
+}
+
+/* Button inside file input */
+.aligned input[type="file"]::file-selector-button {
+    margin-right: 0.75rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--brand-purple);
+    background-color: var(--brand-purple);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        transform 60ms ease;
+
+    /* icon via SVG (white folder) */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='none'%3E%3Cpath d='M4 6.5a1.5 1.5 0 011.5-1.5h1.086a1.5 1.5 0 001.06-.44l.804-.804A1.5 1.5 0 0110.51 3h3.99A1.5 1.5 0 0116 4.5v9A1.5 1.5 0 0114.5 15h-9A1.5 1.5 0 014 13.5v-7z' stroke='%23FFFFFF' stroke-width='1.3' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 0.85rem center;
+    background-size: 0.9rem 0.9rem;
+    padding-left: 2.1rem; /* space for icon */
+}
+
+.aligned input[type="file"]::file-selector-button:hover {
+    background-color: var(--brand-purple-dark);
+    border-color: var(--brand-purple-dark);
+}
+
+.aligned input[type="file"]::file-selector-button:active {
+    transform: translateY(1px);
+}
+
+/************************************************************
+ * Readonly blocks (Creation date, Responsible, Workflow)
+ ************************************************************/
+
+.aligned .readonly {
+    border-radius: var(--form-radius);
+    background-color: var(--form-bg-muted);
+    border: 1px solid var(--form-border-color);
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--form-text);
+    box-shadow: var(--form-shadow);
+}
+
+/* Textarea inside readonly (Workflow area) */
+.aligned .readonly textarea {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    min-height: 4rem;
+    resize: vertical;
+    font-size: var(--form-font-size);
+    line-height: var(--form-line-height);
+}
+
+/************************************************************
+ * Related widget links – perfect circular icon buttons
+ ************************************************************/
+
+.aligned .related-widget-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.aligned .related-widget-wrapper-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;              /* perfect circle */
+    border: 1px solid transparent;
+    background-color: var(--form-bg-muted);
+    padding: 0;                         /* no extra height */
+    line-height: 1;                     /* avoid vertical stretching */
+    box-sizing: border-box;
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        transform 60ms ease;
+}
+
+.aligned .related-widget-wrapper-link img {
+    width: 1.1rem;
+    height: 1.1rem;
+    display: block;
+}
+
+.aligned .related-widget-wrapper-link:hover {
+    background-color: var(--form-bg-light);
+    border-color: var(--form-border-color-hover);
+    transform: translateY(-0.5px);
+}
+
+.aligned .related-widget-wrapper-link[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/************************************************************
+ * Error states (if Django adds .errors or .errorlist)
+ ************************************************************/
+
+.aligned .errorlist {
+    margin: 0.15rem 0 0;
+    padding-left: 1.1rem;
+    list-style-type: disc;
+    color: var(--form-border-color-error);
+    font-size: 0.75rem;
+}
+
+.aligned .field-row.errors input,
+.aligned .field-row.errors select,
+.aligned .field-row.errors textarea {
+    border-color: var(--form-border-color-error) !important;
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.3);
+}
+
+
