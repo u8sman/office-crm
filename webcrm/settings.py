@@ -169,7 +169,7 @@ CACHES = {
         "LOCATION": env("UPSTASH_REDIS_URL"),  # e.g. redis://default:token@host:6379
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "PASSWORD": env("UPSTASH_REDIS_TOKEN"),
+            # "PASSWORD" is already inside the URL
         },
     }
 }
