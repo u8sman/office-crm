@@ -31,4 +31,6 @@
     gunicorn
     redis
     django-redis
+    whitenoise
+
 
