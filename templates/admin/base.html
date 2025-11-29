@@ -1,0 +1,287 @@
+{% extends 'unfold/layouts/skeleton.html' %}
+
+{% load static admin_list i18n unfold %}
+
+{% block base %}
+
+    {# ================= LOADER OVERLAY ================= #}
+    <div
+        id="htmx-loader"
+        class="fixed inset-0 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-200"
+        style="z-index: 99999;"
+    >
+        <div class="loader-wrapper">
+            <span class="loader-letter">L</span>
+            <span class="loader-letter">o</span>
+            <span class="loader-letter">a</span>
+            <span class="loader-letter">d</span>
+            <span class="loader-letter">i</span>
+            <span class="loader-letter">n</span>
+            <span class="loader-letter">g</span>
+            <span class="loader-letter">.</span>
+            <span class="loader-letter">.</span>
+            <span class="loader-letter">.</span>
+
+            <div class="loader"></div>
+        </div>
+    </div>
+
+    <style>
+        /* ---------------- Overlay background (transparent, blurred, like bg-base-900/80 + backdrop-blur-xs) ---------------- */
+
+        /* Light mode */
+        #htmx-loader {
+            background: rgba(30, 41, 59, 0.80);  /* approx base-900/80 */
+            backdrop-filter: blur(2px);          /* approx backdrop-blur-xs */
+            -webkit-backdrop-filter: blur(2px);
+        }
+
+        /* Dark mode */
+        .dark #htmx-loader {
+            background: rgba(15, 23, 42, 0.80);  /* slightly darker base-900/80 */
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+
+        /* ---------------- Loader core ---------------- */
+
+        .loader-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 180px;
+            height: 180px;
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 1.1em;
+            font-weight: 400;
+            color: #f9fafb;  /* light text (works on dark bg) */
+            border-radius: 50%;
+            user-select: none;
+        }
+
+        .loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            animation: loader-rotate 2s linear infinite;
+            animation-play-state: paused;  /* pause when idle */
+            z-index: 0;
+        }
+
+        @keyframes loader-rotate {
+            0% {
+                transform: rotate(90deg);
+                box-shadow:
+                    0 10px 20px 0 #ffffff inset,
+                    0 20px 30px 0 #ad5fff inset,
+                    0 60px 60px 0 #471eec inset;
+            }
+            50% {
+                transform: rotate(270deg);
+                box-shadow:
+                    0 10px 20px 0 #ffffff inset,
+                    0 20px 10px 0 #d60a47 inset,
+                    0 40px 60px 0 #311e80 inset;
+            }
+            100% {
+                transform: rotate(450deg);
+                box-shadow:
+                    0 10px 20px 0 #ffffff inset,
+                    0 20px 30px 0 #ad5fff inset,
+                    0 60px 60px 0 #471eec inset;
+            }
+        }
+
+        .loader-letter {
+            display: inline-block;
+            opacity: 0.4;
+            transform: translateY(0);
+            animation: loader-letter-anim 2s infinite;
+            animation-play-state: paused;  /* pause when idle */
+            z-index: 1;
+            border-radius: 50ch;
+            margin: 0 1px;
+        }
+
+        .loader-letter:nth-child(1)  { animation-delay: 0s; }
+        .loader-letter:nth-child(2)  { animation-delay: 0.1s; }
+        .loader-letter:nth-child(3)  { animation-delay: 0.2s; }
+        .loader-letter:nth-child(4)  { animation-delay: 0.3s; }
+        .loader-letter:nth-child(5)  { animation-delay: 0.4s; }
+        .loader-letter:nth-child(6)  { animation-delay: 0.5s; }
+        .loader-letter:nth-child(7)  { animation-delay: 0.6s; }
+        .loader-letter:nth-child(8)  { animation-delay: 0.7s; }
+        .loader-letter:nth-child(9)  { animation-delay: 0.8s; }
+        .loader-letter:nth-child(10) { animation-delay: 0.9s; }
+
+        @keyframes loader-letter-anim {
+            0%, 100% {
+                opacity: 0.4;
+                transform: translateY(0);
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1.15);
+            }
+            40% {
+                opacity: 0.7;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---------------- HTMX hooks ---------------- */
+
+        /* When HTMX is requesting, show overlay */
+        #htmx-loader.htmx-request {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        /* When HTMX is requesting, run animations */
+        #htmx-loader.htmx-request .loader,
+        #htmx-loader.htmx-request .loader-letter {
+            animation-play-state: running;
+        }
+    </style>
+
+    {# ================= MAIN SPA WRAPPER ================= #}
+    <div
+        id="page"
+        class="flex max-w-full min-h-screen {% element_classes 'page' %}"
+        hx-boost="true"
+        hx-target="#content"
+        hx-select="#content"
+        hx-push-url="true"
+        hx-indicator="#htmx-loader"
+    >
+        {% if not is_popup and is_nav_sidebar_enabled %}
+            {% block nav-sidebar %}
+                {% include "admin/nav_sidebar.html" %}
+            {% endblock %}
+        {% endif %}
+
+        <div id="main" class="bg-white flex flex-col grow min-w-0 dark:bg-base-900 {% element_classes 'main' %}">
+            {% include "unfold/helpers/header.html" %}
+
+            {% block messages %}
+                <div class="px-4">
+                    <div
+                        id="messages-container"
+                        class="{% if not cl.model_admin.list_fullwidth %}container{% endif %} mx-auto"
+                    >
+                        {% include "unfold/helpers/messages.html" %}
+                    </div>
+                </div>
+            {% endblock messages %}
+
+            <div class="@container px-4 pb-4 grow">
+                <div
+                    id="content"
+                    class="{% if not cl.model_admin.list_fullwidth %}container{% endif %} mx-auto {% block coltype %}colM{% endblock %}"
+                >
+                    {% if cl %}
+                        {% tab_list "changelist" cl.opts %}
+                    {% elif opts %}
+                        {% tab_list "changeform" opts %}
+                    {% endif %}
+
+                    {% block content %}
+                        {% block object-tools %}{% endblock %}
+                        {{ content }}
+                    {% endblock %}
+
+                    {% block sidebar %}{% endblock %}
+                </div>
+            </div>
+
+            {% block footer %}{% endblock %}
+        </div>
+    </div>
+
+    {# ================= SCRIPTS ================= #}
+    <script src="/static/unfold/js/htmx/htmx.js"></script>
+
+    <script>
+        // Helper to read Django's csrftoken cookie
+        function getCookie(name) {
+            const value = "; " + document.cookie;
+            const parts = value.split("; " + name + "=");
+            if (parts.length === 2) {
+                return parts.pop().split(";").shift();
+            }
+            return null;
+        }
+
+        // Add CSRF token to all non-GET htmx requests
+        document.body.addEventListener("htmx:configRequest", function (event) {
+            const method = (event.detail.verb || "GET").toUpperCase();
+            if (method !== "GET" && method !== "HEAD") {
+                const csrftoken = getCookie("csrftoken");
+                if (csrftoken) {
+                    event.detail.headers["X-CSRFToken"] = csrftoken;
+                }
+            }
+        });
+
+        // Show Django-style message + detailed alert when an HTMX error happens
+        document.body.addEventListener("htmx:responseError", function (event) {
+            const xhr = event.detail.xhr || {};
+            const status = xhr.status || "";
+            const statusText = xhr.statusText || "";
+
+            const basicMessage = status
+                ? `Error ${status} ${statusText} while loading the page.`
+                : "An unknown error occurred while loading the page.";
+
+            // 1) Inject into Django/Unfold messages area
+            const container = document.getElementById("messages-container");
+            if (container) {
+                let wrapper = container.querySelector("[data-htmx-error-messages]");
+                if (!wrapper) {
+                    wrapper = document.createElement("div");
+                    wrapper.setAttribute("data-htmx-error-messages", "true");
+                    wrapper.className = "mt-2";
+                    container.prepend(wrapper);
+                }
+
+                wrapper.innerHTML = `
+                    <div class="mb-2 rounded-md border px-3 py-2 text-sm
+                                border-red-300 bg-red-50 text-red-800
+                                dark:border-red-700/60 dark:bg-red-900/40 dark:text-red-100">
+                        ${basicMessage}
+                    </div>
+                `;
+            }
+
+            // 2) Build detailed alert content using signal + response
+            let detailText = "";
+
+            if (event.detail.error) {
+                detailText += `HTMX Signal: ${event.detail.error}\n\n`;
+            }
+
+            if (xhr.responseText) {
+                let txt = xhr.responseText.replace(/<[^>]+>/g, " ").trim();
+                if (txt.length > 400) {
+                    txt = txt.slice(0, 400) + "...";
+                }
+                detailText += `Response:\n${txt}\n\n`;
+            }
+
+            if (status) {
+                detailText += `HTTP Status: ${status} ${statusText}\n`;
+            }
+
+            alert(
+`⚠️ Error while loading page
+
+${detailText || "No additional information available."}`
+            );
+        });
+    </script>
+
+{% endblock %}
