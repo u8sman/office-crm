@@ -1,0 +1,372 @@
+{% extends "admin/base.html" %}{% load static %}
+
+{#{% block title %}#}
+{#    {% if subtitle %}{{ subtitle }} | {% endif %}#}
+    {# CRM: add prefix "A:"  for admin page title #}
+{#    {% if "admin" in request.META.PATH_INFO %}A: {% endif %}#}
+{#    {{ title }} | {{ site_title }}#}
+{#{% endblock %}#}
+{##}
+{#{% block branding %}#}
+{#<div id="site-name"><a href="{% url 'admin:index' %}">#}
+    {# CRM: add Django-CRM Logo #}
+{#    <img src="{% static 'common/django-crm_logo_24px.svg' %}" alt="Django-CRM Logo" style="vertical-align: sub;"> {{ site_header }}</a></div>#}
+{#{% if user.is_anonymous %}#}
+{#  {% include "admin/color_theme_toggle.html" %}#}
+{#{% endif %}#}
+{#{% endblock %}#}
+{##}
+{#{% block nav-global %}{% endblock %}#}
+
+{% block extrahead %}
+    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+
+    <script>
+// django_spa_htmx.js
+// Global HTMX enhancer for Django (admin + CRM)
+// - Auto-AJAX links (SPA-style)
+// - Auto-AJAX forms (GET=filters/search, POST=actions)
+// - Auto-AJAX pagination/search forms
+// - Loading spinner + top loading bar
+// - Error toast
+// - Fade in/out transitions
+// - Re-applies to HTMX-swapped content
+
+(function () {
+    "use strict";
+
+    // ---- CONFIG ----
+    // Your main wrapper is #main (you told me this)
+    var CONTENT_TARGET = "#main";
+
+    // Forms/links with this attribute will NOT be ajaxed
+    var NO_AJAX_ATTR = "data-no-ajax";
+
+    // ---- UTILITIES ----
+
+    function ensureHtmx() {
+        if (!window.htmx) {
+            console.error("[django_spa_htmx] htmx is required but not found on window.htmx");
+            return false;
+        }
+        return true;
+    }
+
+    function isSameOrigin(href) {
+        try {
+            var url = new URL(href, window.location.href);
+            return url.origin === window.location.origin;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function hasHxAttrs(el) {
+        return (
+            el.hasAttribute("hx-get") ||
+            el.hasAttribute("hx-post") ||
+            el.hasAttribute("hx-patch") ||
+            el.hasAttribute("hx-put") ||
+            el.hasAttribute("hx-delete") ||
+            el.hasAttribute("hx-boost")
+        );
+    }
+
+    // ---- STYLE INJECTION (spinner, bar, fade, toast) ----
+
+    function injectStyles() {
+        if (document.getElementById("django-spa-htmx-styles")) return;
+
+        var css = `
+        /* Global fade transitions */
+        .htmx-fade-out {
+            opacity: 0;
+            transition: opacity 0.2s ease-out;
+        }
+        .htmx-fade-in {
+            opacity: 0;
+            animation: htmxFadeIn 0.25s forwards ease-in;
+        }
+        @keyframes htmxFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Full-screen spinner overlay */
+        #global-spinner-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.05);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+        }
+        #global-spinner-overlay.active {
+            display: flex;
+        }
+        .global-spinner {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid rgba(0,0,0,0.2);
+            border-top-color: rgba(0,0,0,0.7);
+            animation: globalSpinner 0.8s linear infinite;
+        }
+        @keyframes globalSpinner {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Top loading bar */
+        #global-loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: #3490dc;
+            z-index: 9999;
+            transition: width 0.2s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+        }
+
+        /* Error toast */
+        #htmx-error-toast {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            max-width: 320px;
+            background: #f56565;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+            z-index: 10000;
+        }
+        #htmx-error-toast.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+        `;
+
+        var styleTag = document.createElement("style");
+        styleTag.id = "django-spa-htmx-styles";
+        styleTag.innerHTML = css;
+        document.head.appendChild(styleTag);
+    }
+
+    // ---- UI ELEMENTS (spinner, bar, toast) ----
+
+    var spinnerOverlay = null;
+    var loadingBar = null;
+    var errorToast = null;
+    var activeRequests = 0;
+    var loadingBarTimer = null;
+    var errorToastTimer = null;
+
+    function createUI() {
+        if (!spinnerOverlay) {
+            spinnerOverlay = document.createElement("div");
+            spinnerOverlay.id = "global-spinner-overlay";
+            spinnerOverlay.innerHTML = '<div class="global-spinner" id="global-spinner"></div>';
+            document.body.appendChild(spinnerOverlay);
+        }
+
+        if (!loadingBar) {
+            loadingBar = document.createElement("div");
+            loadingBar.id = "global-loading-bar";
+            document.body.appendChild(loadingBar);
+        }
+
+        if (!errorToast) {
+            errorToast = document.createElement("div");
+            errorToast.id = "htmx-error-toast";
+            document.body.appendChild(errorToast);
+        }
+    }
+
+    function showLoader() {
+        if (!spinnerOverlay || !loadingBar) return;
+        spinnerOverlay.classList.add("active");
+        loadingBar.style.opacity = "1";
+        loadingBar.style.width = "20%";
+
+        clearTimeout(loadingBarTimer);
+        // Slowly slide towards 80% to give a sense of progress
+        loadingBarTimer = setTimeout(function () {
+            loadingBar.style.width = "80%";
+        }, 150);
+    }
+
+    function hideLoader() {
+        if (!spinnerOverlay || !loadingBar) return;
+        spinnerOverlay.classList.remove("active");
+        loadingBar.style.width = "100%";
+
+        clearTimeout(loadingBarTimer);
+        loadingBarTimer = setTimeout(function () {
+            loadingBar.style.opacity = "0";
+            loadingBar.style.width = "0%";
+        }, 250);
+    }
+
+    function showErrorToast(message) {
+        if (!errorToast) return;
+        errorToast.textContent = message || "An error occurred while loading content.";
+        errorToast.classList.add("visible");
+
+        clearTimeout(errorToastTimer);
+        errorToastTimer = setTimeout(function () {
+            errorToast.classList.remove("visible");
+        }, 4000);
+    }
+
+    // ---- ENHANCERS: LINKS + FORMS ----
+
+    function enhanceLinks(root) {
+        root = root || document;
+        var links = root.querySelectorAll("a[href]");
+        links.forEach(function (link) {
+            if (link.hasAttribute(NO_AJAX_ATTR)) return;
+            if (hasHxAttrs(link)) return;
+
+            var href = link.getAttribute("href");
+            if (!href) return;
+
+            // Skip purely hash links and Javascript
+            if (href.charAt(0) === "#" || href.toLowerCase().startsWith("javascript:")) return;
+            // Only same-origin links
+            if (!isSameOrigin(href)) return;
+
+            // Turn into HX GET for SPA-style nav
+            link.setAttribute("hx-get", href);
+            link.setAttribute("hx-target", CONTENT_TARGET);
+            link.setAttribute("hx-push-url", "true");
+            link.setAttribute("hx-indicator", "#global-spinner-overlay");
+
+            // Remove href so browser doesn't full reload
+            link.removeAttribute("href");
+        });
+    }
+
+    function enhanceForms(root) {
+        root = root || document;
+        var forms = root.querySelectorAll("form");
+        forms.forEach(function (form) {
+            if (form.hasAttribute(NO_AJAX_ATTR)) return;
+            if (hasHxAttrs(form)) return;
+
+            var method = (form.getAttribute("method") || "get").toLowerCase();
+            var action = form.getAttribute("action") || window.location.href;
+
+            if (!isSameOrigin(action)) return;
+
+            // GET forms usually are search/filters -> push URL
+            if (method === "get") {
+                form.setAttribute("hx-get", action);
+                form.setAttribute("hx-push-url", "true");
+            } else {
+                // POST forms (create/update/delete)
+                form.setAttribute("hx-post", action);
+                form.setAttribute("hx-push-url", "false");
+            }
+
+            form.setAttribute("hx-target", CONTENT_TARGET);
+            form.setAttribute("hx-indicator", "#global-spinner-overlay");
+        });
+    }
+
+    // ---- HTMX HOOKS: TRANSITIONS + ERROR HANDLING + RE-BIND ----
+
+    function installHtmxHandlers() {
+        if (!ensureHtmx()) return;
+
+        // Global fade transitions on swap
+        htmx.on("htmx:beforeSwap", function (evt) {
+            // Let error responses be handled normally by error event
+            if (evt.detail.isError) return;
+
+            var target = evt.detail.target;
+            if (!target) return;
+
+            target.classList.add("htmx-fade-out");
+            evt.detail.shouldSwap = true;
+            evt.detail.onSwap = function (el) {
+                el.classList.remove("htmx-fade-out");
+                el.classList.add("htmx-fade-in");
+                setTimeout(function () {
+                    el.classList.remove("htmx-fade-in");
+                }, 300);
+            };
+        });
+
+        // Loading: start
+        htmx.on("htmx:beforeRequest", function () {
+            activeRequests += 1;
+            showLoader();
+        });
+
+        // Loading: end (success)
+        htmx.on("htmx:afterRequest", function () {
+            activeRequests = Math.max(0, activeRequests - 1);
+            if (activeRequests === 0) hideLoader();
+        });
+
+        // Loading: end (network error)
+        htmx.on("htmx:sendError", function (evt) {
+            activeRequests = Math.max(0, activeRequests - 1);
+            if (activeRequests === 0) hideLoader();
+            showErrorToast("Network error. Please check your connection.");
+            console.error("[django_spa_htmx] sendError", evt);
+        });
+
+        // Loading: end (server error)
+        htmx.on("htmx:responseError", function (evt) {
+            activeRequests = Math.max(0, activeRequests - 1);
+            if (activeRequests === 0) hideLoader();
+
+            var status = evt.detail.xhr && evt.detail.xhr.status;
+            var msg = "Error " + status + ": Unable to load content.";
+            showErrorToast(msg);
+            console.error("[django_spa_htmx] responseError", evt);
+        });
+
+        // After any swap, re-enhance links/forms inside swapped area
+        htmx.on("htmx:afterSwap", function (evt) {
+            var root = evt.target || document;
+            enhanceLinks(root);
+            enhanceForms(root);
+        });
+    }
+
+    // ---- INIT ----
+
+    function init() {
+        if (!ensureHtmx()) return;
+
+        injectStyles();
+        createUI();
+
+        // Initial enhancement for current DOM
+        enhanceLinks(document);
+        enhanceForms(document);
+
+        // Install global HTMX event handlers
+        installHtmxHandlers();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+    } else {
+        init();
+    }
+})();
+
+    </script>
+{% endblock %}
