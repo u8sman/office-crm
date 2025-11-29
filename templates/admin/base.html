@@ -235,41 +235,117 @@
 ${detail || "No additional information available."}`
             );
         });
-
     </script>
 
     <script>
-    // Make all EXTERNAL links open in a new tab
-    document.addEventListener("click", function (e) {
-        const a = e.target.closest("a");
-        if (!a) return;
+        // Make all EXTERNAL links open in a new tab
+        document.addEventListener("click", function (e) {
+            const a = e.target.closest("a");
+            if (!a) return;
 
-        // Ignore if already set to open in new tab
-        if (a.target === "_blank") return;
+            // Ignore if already set to open in new tab
+            if (a.target === "_blank") return;
 
-        // Ignore htmx boosted or specific admin links
-        if (a.hasAttribute("hx-get") ||
-            a.hasAttribute("hx-post") ||
-            a.hasAttribute("hx-patch") ||
-            a.hasAttribute("hx-put") ||
-            a.hasAttribute("hx-delete") ||
-            a.getAttribute("hx-boost") === "true"
-        ) {
-            return;
-        }
+            // Ignore htmx boosted or specific admin links
+            if (a.hasAttribute("hx-get") ||
+                a.hasAttribute("hx-post") ||
+                a.hasAttribute("hx-patch") ||
+                a.hasAttribute("hx-put") ||
+                a.hasAttribute("hx-delete") ||
+                a.getAttribute("hx-boost") === "true"
+            ) {
+                return;
+            }
 
-        // Build absolute URL for comparison
-        const url = new URL(a.href, window.location.origin);
+            // Build absolute URL for comparison
+            const url = new URL(a.href, window.location.origin);
 
-        // Check if the link domain matches current domain
-        const isExternal = url.origin !== window.location.origin;
+            // Check if the link domain matches current domain
+            const isExternal = url.origin !== window.location.origin;
 
-        if (isExternal) {
-            e.preventDefault();
-            window.open(url.href, "_blank", "noopener,noreferrer");
-        }
-    });
-</script>
+            if (isExternal) {
+                e.preventDefault();
+                window.open(url.href, "_blank", "noopener,noreferrer");
+            }
+        });
+    </script>
 
+    <script>
+        // Keep sidebar "active" state in sync with SPA navigation (Unfold-style)
+        (function () {
+            // Classes Unfold uses for the active menu link
+            const ACTIVE_CLASSES = [
+                "bg-base-100",
+                "font-semibold",
+                "text-primary-600",
+                "dark:bg-white/[.06]",
+                "dark:text-primary-500",
+            ];
+
+            function normalizePath(href) {
+                try {
+                    const url = new URL(href, window.location.origin);
+                    let path = url.pathname || "/";
+                    path = path.replace(/\/+$/, ""); // trim trailing slash
+                    if (path === "") path = "/";
+                    return path;
+                } catch (e) {
+                    return href;
+                }
+            }
+
+            function updateNavActive() {
+                const nav = document.getElementById("nav-sidebar");
+                if (!nav) return;
+
+                const currentPath = normalizePath(window.location.href);
+                const links = nav.querySelectorAll("a[href]");
+                let bestLink = null;
+                let bestLen = -1;
+
+                // Find the best-matching link for current URL
+                links.forEach(function (a) {
+                    const hrefPath = normalizePath(a.href);
+
+                    // match exact changelist URLs and nested detail URLs
+                    const isMatch =
+                        currentPath === hrefPath ||
+                        currentPath.startsWith(hrefPath + "/");
+
+                    if (isMatch && hrefPath.length > bestLen) {
+                        bestLen = hrefPath.length;
+                        bestLink = a;
+                    }
+                });
+
+                // Remove active classes from ALL links
+                links.forEach(function (a) {
+                    ACTIVE_CLASSES.forEach(function (cls) {
+                        a.classList.remove(cls);
+                    });
+                });
+
+                // Add active classes only to the selected link
+                if (bestLink) {
+                    ACTIVE_CLASSES.forEach(function (cls) {
+                        bestLink.classList.add(cls);
+                    });
+                }
+            }
+
+            // On first page load
+            document.addEventListener("DOMContentLoaded", updateNavActive);
+
+            // After htmx swaps the main content (SPA navigation)
+            document.body.addEventListener("htmx:afterSwap", function (event) {
+                if (event.detail && event.detail.target && event.detail.target.id === "content") {
+                    updateNavActive();
+                }
+            });
+
+            // When user uses browser back/forward (hx-push-url)
+            window.addEventListener("popstate", updateNavActive);
+        })();
+    </script>
 
 {% endblock %}
