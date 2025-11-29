@@ -393,12 +393,47 @@ UNFOLD = {
     #     lambda request: static("js/admin-extra.js"),
     # ],
 
+    "SITE_DROPDOWN": [
+        {
+            "icon": "task_alt",
+            "title": _("Basecamp Tasks"),
+            "link": "https://office.power-devs.com/",
+            "attrs": {"target": "_blank"},
+        },
+        {
+            "icon": "bug_report",  # material icon name
+            "title": _("Report Bug"),
+            "link": "https://docs.google.com/spreadsheets/d/1i-PzJvntcrRcWIXhLE5Hzgvxc8FRC62oRhdcR5HygB4/edit?gid=292726321#gid=292726321",
+            # On newer Unfold versions you can also do:
+            # "attrs": {"target": "_blank"},
+        },
+    ],
+
     # SIDEBAR – keep this shape
     "SIDEBAR": {
         "show_search": True,
         "command_search": True,
         "show_all_applications": True,   # hide auto-generated Django sidebar
         "navigation": [
+
+            {
+                "title": _("Shortcuts"),
+                "items": [
+                    {
+                        "title": _("Basecamp Tasks"),
+                        "icon": "task_alt",
+                        "link": "https://office.power-devs.com/",
+                        "new_window": True,
+                    },
+                    {
+                        "title": _("Report Bug"),
+                        "icon": "bug_report",
+                        "link": "https://docs.google.com/spreadsheets/d/1i-PzJvntcrRcWIXhLE5Hzgvxc8FRC62oRhdcR5HygB4/edit?gid=292726321#gid=292726321",
+                        "new_window": True,
+                    },
+                ],
+            },
+
 
             # # -----------------------------
             # # Administration
