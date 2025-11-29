@@ -1,0 +1,427 @@
+/************************************************************
+ * Unfold-style action buttons for CRM object-tools
+ * Works with <div class="object-tools"><li><a>…</a></li></div>
+ ************************************************************/
+
+/* Ensure proper layout & alignment */
+.change-form .object-tools,
+.change-list .object-tools {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+
+    margin: 0;
+    padding: 1rem 2.5rem;
+
+    list-style: none;
+}
+
+/* Clean LI wrapper */
+.change-form .object-tools > li,
+.change-list .object-tools > li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Base button style for links */
+.change-form .object-tools a,
+.change-list .object-tools a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+
+    padding: 0.45rem 0.9rem;
+    border-radius: 0.5rem;
+
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+
+    border: 1px solid var(--color-base-300);
+    background-color: var(--color-base-50);
+    color: var(--color-font-default-light);
+
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        color 120ms ease,
+        transform 80ms ease;
+}
+
+/* Hover ghost button */
+.change-form .object-tools a:hover,
+.change-list .object-tools a:hover {
+    background-color: var(--color-base-100);
+    border-color: var(--color-base-400);
+}
+
+/************************************************************
+ * PRIMARY button (Unfold purple)
+ ************************************************************/
+
+.change-form .object-tools a.addlink,
+.change-list .object-tools a.addlink {
+    background-color: var(--color-primary-600);
+    border-color: var(--color-primary-600);
+    color: #ffffff;
+}
+
+.change-form .object-tools a.addlink:hover,
+.change-list .object-tools a.addlink:hover {
+    background-color: var(--color-primary-700);
+    border-color: var(--color-primary-700);
+}
+
+/************************************************************
+ * Icon inside “Transfer of a manager”
+ ************************************************************/
+
+.change-form .object-tools a i.material-icons,
+.change-list .object-tools a i.material-icons {
+    font-size: 18px;
+    vertical-align: middle;
+    line-height: 1;
+    display: none;
+}
+
+
+/************************************************************
+ * Pretty filters for <details data-filter-title="...">
+ ************************************************************/
+
+/* Outer filter block */
+details[data-filter-title] {
+    margin: 0 0 0.75rem 0;
+    padding: 0;
+    border-radius: 0.5rem;
+    border: 1px solid var(--form-border-color);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    overflow: hidden;
+}
+
+/* Summary header */
+details[data-filter-title] > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0.5rem 0.75rem;
+    list-style: none;
+    cursor: pointer;
+
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--form-text);
+}
+
+/* Remove default marker and add custom chevron */
+details[data-filter-title] > summary::-webkit-details-marker {
+    display: none;
+}
+details[data-filter-title] > summary::marker {
+    content: "";
+}
+
+details[data-filter-title] > summary::after {
+    content: "▾";
+    font-size: 0.7rem;
+    color: var(--form-text-muted);
+    margin-left: 0.35rem;
+    transition: transform 120ms ease;
+}
+
+/* Rotate chevron when open */
+details[data-filter-title][open] > summary::after {
+    transform: rotate(180deg);
+}
+
+/* List body */
+details[data-filter-title] > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem 0.5rem 0.6rem;
+}
+
+/* Each option row */
+details[data-filter-title] > ul > li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Standard link style */
+details[data-filter-title] > ul > li > a {
+    display: block;
+    padding: 0.25rem 0.4rem;
+    border-radius: 0.35rem;
+
+    font-size: 0.78rem;
+    color: var(--form-text-muted);
+    text-decoration: none;
+
+    transition:
+        background-color 120ms ease,
+        color 120ms ease;
+}
+
+/* Hover */
+details[data-filter-title] > ul > li > a:hover {
+    background-color: var(--form-bg-light);
+    color: var(--form-text);
+}
+
+/* Selected option */
+details[data-filter-title] > ul > li.selected > a {
+    background-color: var(--brand-purple);
+    color: #ffffff;
+}
+
+/************************************************************
+ * "Specify dates" section
+ ************************************************************/
+
+details[data-filter-title] .justify-container {
+    margin-top: 0.4rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--form-bg-light);
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+details[data-filter-title] .justify-row {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    color: var(--form-text-muted);
+}
+
+/* Labels inside custom range */
+details[data-filter-title] .justify-row label {
+    font-size: 0.75rem;
+    color: var(--form-text-muted);
+}
+
+/* Inputs inside filter form */
+details[data-filter-title] input[type="text"],
+details[data-filter-title] input[type="date"],
+details[data-filter-title] input[type="search"] {
+    border-radius: 0.35rem;
+    border: 1px solid var(--form-border-color);
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+    width: 6.5rem;
+
+    background-color: var(--form-bg-muted);
+    color: var(--form-text);
+
+    transition:
+        border-color 120ms ease,
+        background-color 120ms ease,
+        box-shadow 120ms ease;
+}
+
+details[data-filter-title] input[type="text"]:focus {
+    outline: none;
+    border-color: var(--form-border-color-focus);
+    box-shadow: 0 0 0 1px rgba(59,130,246,0.25);
+}
+
+/* Submit button */
+details[data-filter-title] input[type="submit"] {
+    margin-left: auto;
+    border-radius: 999px;
+    border: 1px solid var(--brand-purple);
+    background-color: var(--brand-purple);
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.75rem;
+    cursor: pointer;
+
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        transform 60ms ease;
+}
+
+details[data-filter-title] input[type="submit"]:hover {
+    background-color: var(--brand-purple-dark);
+    border-color: var(--brand-purple-dark);
+}
+
+details[data-filter-title] input[type="submit"]:active {
+    transform: translateY(1px);
+}
+
+/* Tiny helper text "(YYYY-MM-DD)" */
+details[data-filter-title] .justify-row:first-child + .justify-row + .justify-row {
+    font-size: 0.7rem;
+    color: var(--form-text-muted);
+}
+
+
+/* ============================
+   Login page – Unfold-style overrides
+   ============================ */
+
+/* Let body background show instead of #page forcing white */
+body.login #page {
+    background-color: transparent !important;
+}
+
+/* ============================
+   Login page – Unfold-style overrides (FORCE OVERRIDE)
+   ============================ */
+
+/* Let body background show instead of #page forcing white */
+body.login #page {
+    background-color: transparent !important;
+}
+
+/* ---------- Overall layout for login page ---------- */
+
+body.login {
+    min-height: 100vh !important;
+    background-color: var(--color-base-50, #f9fafb) !important;
+    color: var(--color-font-default-light, #0f172a) !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif !important;
+}
+
+/* Dark mode */
+html.dark body.login {
+    background-color: var(--color-base-900, #020617) !important;
+    color: var(--color-font-default-dark, #e5e7eb) !important;
+}
+
+/* Center wrapper */
+body.login .flex.grow.items-center.justify-center.mx-auto.px-4.relative {
+    padding-top: 4rem !important;
+    padding-bottom: 4rem !important;
+}
+
+@media (min-width: 1024px) {
+    body.login .flex.grow.items-center.justify-center.mx-auto.px-4.relative {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+}
+
+/* Card container */
+body.login [class~="sm:w-96"] {
+    background-color: #ffffff !important;
+    border-radius: var(--border-radius, 0.5rem) !important;
+    padding: 2rem 2.25rem !important;
+    box-shadow: 0 18px 60px rgba(15, 23, 42, 0.18) !important;
+}
+
+/* Dark mode card */
+html.dark body.login [class~="sm:w-96"] {
+    background-color: var(--color-base-900, #020617) !important;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* ---------- Headings ---------- */
+body.login h1 {
+    margin: 0 !important;
+}
+
+body.login .border-b.border-base-200 {
+    border-color: var(--color-base-200, #e5e7eb) !important;
+}
+
+html.dark body.login .border-b.border-base-200 {
+    border-color: var(--color-base-800, #1f2937) !important;
+}
+
+body.login h1 span.block.text-primary-600 {
+    letter-spacing: 0.05em !important;
+}
+
+/* ---------- Labels ---------- */
+
+body.login label {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: var(--color-font-important-light, #020617) !important;
+}
+
+html.dark body.login label {
+    color: var(--color-font-important-dark, #f9fafb) !important;
+}
+
+/* ---------- Inputs ---------- */
+
+body.login input[type="text"],
+body.login input[type="password"] {
+    width: 100% !important;
+    display: block !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: var(--border-radius, .5rem) !important;
+    border: 1px solid var(--color-base-200, #e5e7eb) !important;
+    background-color: #ffffff !important;
+    color: var(--color-font-default-light, #0f172a) !important;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+    outline: none !important;
+}
+
+body.login input[type="text"]::placeholder,
+body.login input[type="password"]::placeholder {
+    color: var(--color-base-400, #9ca3af) !important;
+}
+
+/* Dark mode */
+html.dark body.login input[type="text"],
+html.dark body.login input[type="password"] {
+    background-color: var(--color-base-900, #020617) !important;
+    border-color: var(--color-base-700, #374151) !important;
+    color: var(--color-font-default-dark, #e5e7eb) !important;
+}
+
+/* Focus */
+body.login input[type="text"]:focus,
+body.login input[type="password"]:focus {
+    border-color: var(--color-primary-600, #4f46e5) !important;
+    outline: 2px solid var(--color-primary-600, #4f46e5) !important;
+    outline-offset: -2px !important;
+}
+
+/* ---------- Submit button ---------- */
+
+body.login button[type="submit"] {
+    border-radius: var(--border-radius, 0.5rem) !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 0.75rem !important;
+    border: 1px solid transparent !important;
+    background-color: var(--color-primary-600, #4f46e5) !important;
+    color: #ffffff !important;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.35) !important;
+    transition: background-color 120ms ease-out,
+                box-shadow 120ms ease-out,
+                transform 80ms ease-out;
+}
+
+body.login button[type="submit"]:hover {
+    background-color: var(--color-primary-500, #6366f1) !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.35) !important;
+    transform: translateY(-0.5px) !important;
+}
+
+body.login button[type="submit"]:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.3) !important;
+}
+
+body.login button[type="submit"] .material-symbols-outlined {
+    transition: transform 150ms ease-out !important;
+}
+
+body.login button[type="submit"]:hover .material-symbols-outlined {
+    transform: translateX(4px) !important;
+}
+

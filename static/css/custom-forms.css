@@ -1,0 +1,769 @@
+/************************************************************
+ * Base tokens – using Unfold / Tailwind theme variables
+ ************************************************************/
+
+:root {
+    /* Radii */
+    --form-radius: 8px;
+
+    /* Borders */
+    --form-border-color: var(--color-base-200);             /* base border */
+    --form-border-color-hover: var(--color-base-300);       /* hover border */
+    --form-border-color-focus: var(--color-primary-500);    /* primary / blue-ish */
+    --form-border-color-error: var(--color-red-500);        /* red-500 */
+
+    /* Backgrounds */
+    --form-bg: var(--color-base-0, var(--color-white));     /* main surface */
+    --form-bg-muted: var(--color-base-50);                  /* light bg */
+    --form-bg-light: var(--color-base-100);                 /* slightly darker bg */
+
+    /* Text */
+    --form-text: var(--color-font-default-light);
+    --form-text-muted: var(--color-font-subtle-light);
+    --form-placeholder: var(--color-base-400);
+
+    /* Shadows */
+    --form-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+
+    /* Spacing + sizes */
+    --form-padding-y: 0.5rem;
+    --form-padding-x: 0.75rem;
+    --form-font-size: 0.875rem;
+    --form-line-height: 1.5;
+
+    /* Accent brand color (hook into primary) */
+    --brand-purple: var(--color-primary-600);
+    --brand-purple-dark: var(--color-primary-700);
+}
+
+/************************************************************
+ * Dark mode tokens – override for .dark context
+ ************************************************************/
+
+.dark {
+    --form-border-color: var(--color-base-700);
+    --form-border-color-hover: var(--color-base-500);
+    --form-border-color-focus: var(--color-primary-400);
+    --form-border-color-error: var(--color-red-300);
+
+    --form-bg: var(--color-base-950);
+    --form-bg-muted: var(--color-base-950);
+    --form-bg-light: var(--color-base-900);
+
+    --form-text: var(--color-font-default-dark);
+    --form-text-muted: var(--color-font-subtle-dark);
+    --form-placeholder: var(--color-base-500);
+
+    --form-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/************************************************************
+ * Layout for rows and lines
+ ************************************************************/
+
+.aligned {
+    background-color: var(--form-bg);
+}
+
+.aligned .field-row.form-row,
+.aligned .field-row {
+    border-bottom: 1px solid var(--form-bg-light);
+}
+
+.aligned .field-row.last {
+    border-bottom: none;
+}
+
+.aligned .field-line {
+    gap: 0.25rem;
+}
+
+/************************************************************
+ * Align inner flex rows (e.g. checkbox row) with center
+ ************************************************************/
+
+.aligned .field-line > .flex {
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-row {
+    display: inline-flex;
+}
+
+/************************************************************
+ * Labels
+ ************************************************************/
+
+.aligned label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--form-text-muted);
+}
+
+.aligned label.inline,
+.aligned .vCheckboxLabel.inline {
+    display: inline-flex;
+}
+
+/************************************************************
+ * Generic form controls
+ ************************************************************/
+
+.aligned input[type="text"],
+.aligned input[type="email"],
+.aligned input[type="number"],
+.aligned input[type="password"],
+.aligned input[type="url"],
+.aligned input[type="tel"],
+.aligned input[type="search"],
+.aligned input[type="datetime-local"],
+.aligned input[type="date"],
+.aligned input[type="time"],
+.aligned input[type="month"],
+.aligned input[type="week"],
+.aligned textarea,
+.aligned select,
+.aligned .vDateField,
+.aligned .vLargeTextField {
+    width: 100%;
+    display: block;
+    border-radius: var(--form-radius);
+    border: 1px solid var(--form-border-color);
+    background-color: var(--form-bg-muted);
+    padding: var(--form-padding-y) var(--form-padding-x);
+    font-size: var(--form-font-size);
+    line-height: var(--form-line-height);
+    color: var(--form-text);
+    outline: none;
+    box-shadow: var(--form-shadow);
+    transition:
+        border-color 120ms ease,
+        box-shadow 120ms ease,
+        background-color 120ms ease,
+        transform 60ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.aligned input::placeholder,
+.aligned textarea::placeholder {
+    color: var(--form-placeholder);
+}
+
+/* Hover state */
+.aligned input[type="text"]:hover,
+.aligned input[type="email"]:hover,
+.aligned input[type="number"]:hover,
+.aligned input[type="password"]:hover,
+.aligned input[type="url"]:hover,
+.aligned input[type="tel"]:hover,
+.aligned input[type="search"]:hover,
+.aligned input[type="datetime-local"]:hover,
+.aligned input[type="date"]:hover,
+.aligned input[type="time"]:hover,
+.aligned input[type="month"]:hover,
+.aligned input[type="week"]:hover,
+.aligned textarea:hover,
+.aligned select:hover,
+.aligned .vDateField:hover,
+.aligned .vLargeTextField:hover {
+    border-color: var(--form-border-color-hover);
+}
+
+/* Focus state */
+.aligned input[type="text"]:focus,
+.aligned input[type="email"]:focus,
+.aligned input[type="number"]:focus,
+.aligned input[type="password"]:focus,
+.aligned input[type="url"]:focus,
+.aligned input[type="tel"]:focus,
+.aligned input[type="search"]:focus,
+.aligned input[type="datetime-local"]:focus,
+.aligned input[type="date"]:focus,
+.aligned input[type="time"]:focus,
+.aligned input[type="month"]:focus,
+.aligned input[type="week"]:focus,
+.aligned textarea:focus,
+.aligned select:focus,
+.aligned .vDateField:focus,
+.aligned .vLargeTextField:focus {
+    border-color: var(--form-border-color-focus);
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--form-border-color-focus) 35%, transparent),
+        var(--form-shadow);
+    background-color: var(--form-bg);
+}
+
+/* Disabled / readonly */
+.aligned input[disabled],
+.aligned select[disabled],
+.aligned textarea[disabled],
+.aligned input[readonly],
+.aligned textarea[readonly] {
+    background-color: var(--form-bg-light);
+    color: var(--form-text-muted);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/************************************************************
+ * Textareas
+ ************************************************************/
+
+.aligned textarea,
+.aligned .vLargeTextField {
+    min-height: 5rem;
+    resize: vertical;
+}
+
+/************************************************************
+ * Selects
+ ************************************************************/
+
+.aligned select {
+    padding-right: 2.25rem;
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0.7rem 0.7rem;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.5 7.5L10 12l4.5-4.5' stroke='%239CA3AF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.aligned .related-widget-wrapper select {
+    width: 100%;
+}
+
+/************************************************************
+ * Date inputs & shortcuts
+ ************************************************************/
+
+.aligned p.date {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+}
+
+.aligned .datetimeshortcuts {
+    margin-right: 25px;
+    white-space: nowrap;
+    color: var(--form-text-muted);
+}
+
+.aligned .datetimeshortcuts a {
+    text-decoration: none;
+    color: var(--form-border-color-focus);
+}
+
+.aligned .datetimeshortcuts a:hover {
+    text-decoration: underline;
+}
+
+.aligned .date-icon {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 999px;
+}
+
+/************************************************************
+ * Checkboxes – pill toggle style
+ ************************************************************/
+
+/* Base: pill track */
+.aligned input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    width: 2.35rem;
+    height: 1.3rem;
+
+    border-radius: 999px;
+    border: 1px solid var(--form-border-color);
+
+    background-color: var(--color-base-300); /* off state */
+
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    margin-right: 0.4rem;
+    cursor: pointer;
+
+    transition:
+        border-color 120ms ease,
+        background-color 120ms ease,
+        box-shadow 120ms ease;
+}
+
+/* Thumb using ::after */
+.aligned input[type="checkbox"]::after {
+    content: "";
+    position: absolute;
+
+    width: 0.8rem;
+    height: 0.8rem;
+    background-color: var(--color-base-0, var(--color-white));
+    border-radius: 50%;
+
+    top: 50%;
+    left: 0.15rem;
+    transform: translateY(-50%);
+
+    transition:
+        transform 180ms ease,
+        background-color 160ms ease;
+}
+
+/* Hover */
+.aligned input[type="checkbox"]:hover {
+    border-color: var(--form-border-color-hover);
+}
+
+/* Focus */
+.aligned input[type="checkbox"]:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--form-border-color-focus) 40%, transparent);
+    border-color: var(--form-border-color-focus);
+}
+
+/* Checked state – track */
+.aligned input[type="checkbox"]:checked {
+    background-color: var(--brand-purple);
+    border-color: var(--brand-purple);
+}
+
+/* Checked state – move thumb to right */
+.aligned input[type="checkbox"]:checked::after {
+    transform: translate(1.05rem, -50%);
+}
+
+/* Label */
+.aligned .vCheckboxLabel {
+    font-size: 0.85rem;
+    color: var(--form-text);
+    cursor: pointer;
+}
+
+.aligned .field-line {
+    align-self: center;
+}
+
+/************************************************************
+ * Radio buttons
+ ************************************************************/
+
+.aligned input[type="radio"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 1.05rem;
+    height: 1.05rem;
+    border-radius: 999px;
+    border: 1px solid var(--form-border-color);
+    background-color: var(--form-bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.35rem;
+    cursor: pointer;
+    transition:
+        border-color 120ms ease,
+        background-color 120ms ease,
+        box-shadow 120ms ease,
+        transform 60ms ease;
+}
+
+/* Hover */
+.aligned input[type="radio"]:hover {
+    border-color: var(--form-border-color-hover);
+}
+
+/* Focus ring */
+.aligned input[type="radio"]:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--form-border-color-focus) 40%, transparent);
+    border-color: var(--form-border-color-focus);
+}
+
+/* Checked – inner dot */
+.aligned input[type="radio"]:checked {
+    border-color: var(--brand-purple);
+    background-color: var(--form-bg);
+}
+
+.aligned input[type="radio"]:checked::after {
+    content: "";
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: var(--brand-purple);
+}
+
+/* Layout of Stage options */
+.aligned .radiolist.inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin-top: 0.25rem;
+}
+
+.aligned .radiolist.inline > div {
+    display: inline-flex;
+    align-items: center;
+}
+
+.aligned .radiolist.inline label {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--form-text);
+    cursor: pointer;
+}
+
+/************************************************************
+ * File input
+ ************************************************************/
+
+.aligned input[type="file"] {
+    font-size: 0.8rem;
+    color: var(--form-text-muted);
+}
+
+.aligned input[type="file"]::file-selector-button {
+    margin-right: 0.75rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--brand-purple);
+    background-color: var(--brand-purple);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-base-0, var(--color-white));
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        transform 60ms ease;
+
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='none'%3E%3Cpath d='M4 6.5a1.5 1.5 0 011.5-1.5h1.086a1.5 1.5 0 001.06-.44l.804-.804A1.5 1.5 0 0110.51 3h3.99A1.5 1.5 0 0116 4.5v9A1.5 1.5 0 0114.5 15h-9A1.5 1.5 0 014 13.5v-7z' stroke='%23FFFFFF' stroke-width='1.3' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 0.85rem center;
+    background-size: 0.9rem 0.9rem;
+    padding-left: 2.1rem;
+}
+
+.aligned input[type="file"]::file-selector-button:hover {
+    background-color: var(--brand-purple-dark);
+    border-color: var(--brand-purple-dark);
+}
+
+.aligned input[type="file"]::file-selector-button:active {
+    transform: translateY(1px);
+}
+
+/************************************************************
+ * Readonly blocks
+ ************************************************************/
+
+.aligned .readonly {
+    border-radius: var(--form-radius);
+    background-color: var(--form-bg-muted);
+    border: 1px solid var(--form-border-color);
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--form-text);
+    box-shadow: var(--form-shadow);
+}
+
+.aligned .readonly textarea {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    min-height: 4rem;
+    resize: vertical;
+    font-size: var(--form-font-size);
+    line-height: var(--form-line-height);
+}
+
+/************************************************************
+ * Related widget links
+ ************************************************************/
+
+.aligned .related-widget-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.aligned .related-widget-wrapper-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background-color: var(--form-bg-muted);
+    padding: 0;
+    line-height: 1;
+    box-sizing: border-box;
+    transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        transform 60ms ease;
+}
+
+.aligned .related-widget-wrapper-link img {
+    width: 1.1rem;
+    height: 1.1rem;
+    display: block;
+}
+
+.aligned .related-widget-wrapper-link:hover {
+    background-color: var(--form-bg-light);
+    border-color: var(--form-border-color-hover);
+    transform: translateY(-0.5px);
+}
+
+.aligned .related-widget-wrapper-link[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/************************************************************
+ * Error states
+ ************************************************************/
+
+.aligned .errorlist {
+    margin: 0.15rem 0 0;
+    padding-left: 1.1rem;
+    list-style-type: disc;
+    color: var(--form-border-color-error);
+    font-size: 0.75rem;
+}
+
+.aligned .field-row.errors input,
+.aligned .field-row.errors select,
+.aligned .field-row.errors textarea {
+    border-color: var(--form-border-color-error) !important;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--form-border-color-error) 30%, transparent);
+}
+
+/************************************************************
+ * Custom help alignment
+ ************************************************************/
+
+form .aligned p.help,
+form .aligned div.help {
+    margin-left: 0 !important;
+}
+
+/************************************************************
+ * Sticky submit row – Unfold-style
+ ************************************************************/
+
+.submit-row {
+    position: sticky;
+    bottom: 0;
+    z-index: 40;
+
+    width: 100%;
+    margin: 0;
+    padding: 1rem 1.25rem;
+
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+
+    background: color-mix(in srgb, var(--color-base-0, var(--color-white)) 92%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    border-top: 1px solid color-mix(in srgb, var(--color-base-900) 8%, transparent);
+    box-shadow: 0 -1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.dark .submit-row,
+[data-theme="dark"] .submit-row {
+    background: color-mix(in srgb, var(--color-base-900) 90%, transparent);
+    border-top-color: color-mix(in srgb, var(--color-base-700) 60%, transparent);
+}
+
+/* Buttons */
+
+.submit-row input[type="submit"] {
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+
+    background-color: var(--color-base-0, var(--color-white));
+    border: 1px solid color-mix(in srgb, var(--color-base-900) 12%, transparent);
+    color: var(--color-font-default-light);
+
+    transition:
+        background-color 120ms ease,
+        color 120ms ease,
+        border-color 120ms ease,
+        box-shadow 120ms ease;
+}
+
+.submit-row input[type="submit"]:hover {
+    background-color: var(--color-base-50);
+}
+
+/* Primary "Save" button */
+.submit-row .default[name="_save"] {
+    background-color: var(--brand-purple);
+    border-color: transparent;
+    color: var(--color-base-0, var(--color-white));
+}
+
+.submit-row .default[name="_save"]:hover {
+    background-color: var(--brand-purple-dark);
+}
+
+/* SEND button ghost style */
+.submit-row input[name="_send"] {
+    background: transparent;
+    border-color: color-mix(in srgb, var(--color-base-900) 12%, transparent);
+    color: var(--color-font-subtle-light);
+}
+
+.submit-row input[name="_send"]:hover {
+    background: color-mix(in srgb, var(--color-base-300) 10%, transparent);
+}
+
+.submit-row input[type="submit"]:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand-purple) 35%, transparent);
+}
+
+/* Desktop layout: right-aligned, SEND first, SAVE last visually */
+
+@media (min-width: 1024px) {
+    .submit-row {
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 0.75rem 2rem;
+        gap: 0.75rem;
+    }
+
+    .submit-row input[type="submit"] {
+        width: auto;
+    }
+
+    .submit-row .default[name="_save"] {
+        order: 3;
+    }
+
+    .submit-row input[name="_continue"] {
+        order: 2;
+    }
+
+    .submit-row input[name="_send"] {
+        order: 1;
+    }
+}
+
+
+/* Container spacing */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li {
+    margin-right: 8px;
+}
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li:last-child {
+    margin-right: 0;
+}
+
+/* Base primary button style */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 14px;
+    min-height: 32px;          /* 🔹 ensures same height for all buttons */
+    line-height: 1;            /* tighter, consistent vertical alignment */
+
+    background: var(--color-primary-600, #4f46e5);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    text-decoration: none;
+    gap: 6px;
+
+    border: 1px solid transparent;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: background 150ms ease, box-shadow 150ms ease, transform 120ms ease;
+}
+
+/* Hover state */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a:hover {
+    background: var(--color-primary-500, #6366f1);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    transform: translateY(-1px);
+}
+
+/* Hide the old <i class="material-icons"> icons */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a i {
+    display: none;
+}
+
+/* Make room for new icon on the left */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a {
+    padding-left: 30px;   /* space for icon */
+}
+
+/* Base style for all Material Symbols pseudo-icons */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a::before {
+    font-family: "Material Symbols Outlined";
+    font-size: 18px;
+    line-height: 1;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);   /* 🔹 centers icon vertically */
+}
+
+/* --- Per-button icons using Material Symbols ligatures --- */
+
+/* Send a test */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a[href*="send-test"]::before {
+    content: "send";
+}
+
+/* Copy message */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a[href*="copy-message"]::before {
+    content: "content_copy";
+}
+
+/* View uploaded images */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a[onclick*="show-uploaded-images"]::before {
+    content: "visibility";
+}
+
+/* Upload image */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a[onclick*="pic-upload"]::before {
+    content: "file_upload";
+}
+
+/* History link */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a.historylink::before {
+    content: "history";
+}
