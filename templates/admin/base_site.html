@@ -1,30 +1,30 @@
 {% extends "admin/base.html" %}{% load static %}
 
-{#{% block title %}#}
-{#    {% if subtitle %}{{ subtitle }} | {% endif %}#}
-    {# CRM: add prefix "A:"  for admin page title #}
-{#    {% if "admin" in request.META.PATH_INFO %}A: {% endif %}#}
-{#    {{ title }} | {{ site_title }}#}
-{#{% endblock %}#}
-{##}
-{#{% block branding %}#}
-{#<div id="site-name"><a href="{% url 'admin:index' %}">#}
-    {# CRM: add Django-CRM Logo #}
+{% block title %}
+    {% if subtitle %}{{ subtitle }} | {% endif %}
+     CRM: add prefix "A:"  for admin page title
+    {% if "admin" in request.META.PATH_INFO %}A: {% endif %}
+    {{ title }} | {{ site_title }}
+{% endblock %}
+
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %}">
+{#     CRM: add Django-CRM Logo #}
 {#    <img src="{% static 'common/django-crm_logo_24px.svg' %}" alt="Django-CRM Logo" style="vertical-align: sub;"> {{ site_header }}</a></div>#}
 {#{% if user.is_anonymous %}#}
 {#  {% include "admin/color_theme_toggle.html" %}#}
 {#{% endif %}#}
-{#{% endblock %}#}
-{##}
+{% endblock %}
+
 {#{% block nav-global %}{% endblock %}#}
 
 {% block extrahead %}
     <script src="https://unpkg.com/htmx.org@2.0.2"></script>
 
     <script>
-// django_spa_htmx.js
+    // django_spa_htmx.js
 // Global HTMX enhancer for Django (admin + CRM)
-// - Auto-AJAX links (SPA-style)
+// - Auto-AJAX links (SPA-style) but keeps href as fallback
 // - Auto-AJAX forms (GET=filters/search, POST=actions)
 // - Auto-AJAX pagination/search forms
 // - Loading spinner + top loading bar
@@ -36,7 +36,7 @@
     "use strict";
 
     // ---- CONFIG ----
-    // Your main wrapper is #main (you told me this)
+    // Your main wrapper is #main
     var CONTENT_TARGET = "#main";
 
     // Forms/links with this attribute will NOT be ajaxed
@@ -198,7 +198,6 @@
         loadingBar.style.width = "20%";
 
         clearTimeout(loadingBarTimer);
-        // Slowly slide towards 80% to give a sense of progress
         loadingBarTimer = setTimeout(function () {
             loadingBar.style.width = "80%";
         }, 150);
@@ -239,7 +238,7 @@
             var href = link.getAttribute("href");
             if (!href) return;
 
-            // Skip purely hash links and Javascript
+            // Skip purely hash links and javascript: links
             if (href.charAt(0) === "#" || href.toLowerCase().startsWith("javascript:")) return;
             // Only same-origin links
             if (!isSameOrigin(href)) return;
@@ -250,8 +249,8 @@
             link.setAttribute("hx-push-url", "true");
             link.setAttribute("hx-indicator", "#global-spinner-overlay");
 
-            // Remove href so browser doesn't full reload
-            link.removeAttribute("href");
+            // IMPORTANT: we KEEP href as fallback
+            // Browser can still do full navigation if HTMX not working
         });
     }
 
@@ -267,8 +266,8 @@
 
             if (!isSameOrigin(action)) return;
 
-            // GET forms usually are search/filters -> push URL
             if (method === "get") {
+                // Typically search/filters
                 form.setAttribute("hx-get", action);
                 form.setAttribute("hx-push-url", "true");
             } else {
@@ -289,7 +288,6 @@
 
         // Global fade transitions on swap
         htmx.on("htmx:beforeSwap", function (evt) {
-            // Let error responses be handled normally by error event
             if (evt.detail.isError) return;
 
             var target = evt.detail.target;
@@ -353,11 +351,9 @@
         injectStyles();
         createUI();
 
-        // Initial enhancement for current DOM
         enhanceLinks(document);
         enhanceForms(document);
 
-        // Install global HTMX event handlers
         installHtmxHandlers();
     }
 
@@ -368,5 +364,9 @@
     }
 })();
 
+
+
     </script>
+
+
 {% endblock %}
