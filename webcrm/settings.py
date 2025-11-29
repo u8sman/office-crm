@@ -447,12 +447,12 @@ UNFOLD = {
             #         {
             #             "title": "Log entries",
             #             "icon": "receipt_long",
-            #             "link": "/en/admin/logentry/",
+            #             "link": "/en/admin/admin/logentry/",
             #             "actions": [
             #                 {
             #                     "title": "Add",
             #                     "icon": "add",
-            #                     "link": "/en/admin/logentry/add/",
+            #                     "link": "/en/admin/admin/logentry/add/",
             #                 }
             #             ],
             #         },
@@ -471,17 +471,17 @@ UNFOLD = {
             #         {
             #             "title": "Income Summary",
             #             "icon": "insights",
-            #             "link": "/en/analytics/incomestat/",
+            #             "link": "/en/admin/analytics/incomestat/",
             #             "actions": [
-            #                 {"title": "Add", "icon": "add", "link": "/en/analytics/incomestat/add/"}
+            #                 {"title": "Add", "icon": "add", "link": "/en/admin/analytics/incomestat/add/"}
             #             ],
             #         },
             #         {
             #             "title": "IncomeStat Snapshots",
             #             "icon": "monitoring",
-            #             "link": "/en/analytics/incomestatsnapshot/",
+            #             "link": "/en/admin/analytics/incomestatsnapshot/",
             #             "actions": [
-            #                 {"title": "Add", "icon": "add", "link": "/en/analytics/incomestatsnapshot/add/"}
+            #                 {"title": "Add", "icon": "add", "link": "/en/admin/analytics/incomestatsnapshot/add/"}
             #             ],
             #         },
             #     ],
@@ -499,25 +499,25 @@ UNFOLD = {
             #         {
             #             "title": "Groups",
             #             "icon": "group",
-            #             "link": "/en/auth/group/",
+            #             "link": "/en/admin/auth/group/",
             #             "actions": [
-            #                 {"title": "Add", "icon": "add", "link": "/en/auth/group/add/"}
+            #                 {"title": "Add", "icon": "add", "link": "/en/admin/auth/group/add/"}
             #             ],
             #         },
             #         {
             #             "title": "Permissions",
             #             "icon": "lock",
-            #             "link": "/en/auth/permission/",
+            #             "link": "/en/admin/auth/permission/",
             #             "actions": [
-            #                 {"title": "Add", "icon": "add", "link": "/en/auth/permission/add/"}
+            #                 {"title": "Add", "icon": "add", "link": "/en/admin/auth/permission/add/"}
             #             ],
             #         },
             #         {
             #             "title": "Users",
             #             "icon": "person",
-            #             "link": "/en/auth/user/",
+            #             "link": "/en/admin/auth/user/",
             #             "actions": [
-            #                 {"title": "Add", "icon": "add", "link": "/en/auth/user/add/"}
+            #                 {"title": "Add", "icon": "add", "link": "/en/admin/auth/user/add/"}
             #             ],
             #         },
             #     ],
@@ -535,9 +535,9 @@ UNFOLD = {
             #         {
             #             "title": "Messages",
             #             "icon": "chat",
-            #             "link": "/en/chat/chatmessage/",
+            #             "link": "/en/admin/chat/chatmessage/",
             #             "actions": [
-            #                 {"title": "Add", "icon": "add", "link": "/en/chat/chatmessage/add/"}
+            #                 {"title": "Add", "icon": "add", "link": "/en/admin/chat/chatmessage/add/"}
             #             ],
             #         },
             #     ],
@@ -552,10 +552,10 @@ UNFOLD = {
             #     "collapsible": True,
             #     "collapsed": True,
             #     "items": [
-            #         {"title": "Departments", "icon": "work", "link": "/en/common/department/", "actions":[{"title":"Add","icon":"add","link":"/en/common/department/add/"}]},
-            #         {"title": "Files", "icon": "folder", "link": "/en/common/thefile/", "actions":[{"title":"Add","icon":"add","link":"/en/common/thefile/add/"}]},
-            #         {"title": "Reminders", "icon": "alarm", "link": "/en/common/reminder/", "actions":[{"title":"Add","icon":"add","link":"/en/common/reminder/add/"}]},
-            #         {"title": "User profiles", "icon": "badge", "link": "/en/common/userprofile/", "actions":[{"title":"Add","icon":"add","link":"/en/common/userprofile/add/"}]},
+            #         {"title": "Departments", "icon": "work", "link": "/en/admin/common/department/", "actions":[{"title":"Add","icon":"add","link":"/en/admin/common/department/add/"}]},
+            #         {"title": "Files", "icon": "folder", "link": "/en/admin/common/thefile/", "actions":[{"title":"Add","icon":"add","link":"/en/admin/common/thefile/add/"}]},
+            #         {"title": "Reminders", "icon": "alarm", "link": "/en/admin/common/reminder/", "actions":[{"title":"Add","icon":"add","link":"/en/admin/common/reminder/add/"}]},
+            #         {"title": "User profiles", "icon": "badge", "link": "/en/admin/common/userprofile/", "actions":[{"title":"Add","icon":"add","link":"/en/admin/common/userprofile/add/"}]},
             #     ],
             # },
             #
@@ -568,26 +568,26 @@ UNFOLD = {
             #     "collapsible": True,
             #     "collapsed": True,
             #     "items": [
-            #         {"title":"Cities","icon":"location_city","link":"/en/crm/city/","actions":[{"title":"Add","icon":"add","link":"/en/crm/city/add/"}]},
-            #         {"title":"Closing reasons","icon":"cancel","link":"/en/crm/closingreason/","actions":[{"title":"Add","icon":"add","link":"/en/crm/closingreason/add/"}]},
-            #         {"title":"Companies","icon":"business","link":"/en/crm/company/","actions":[{"title":"Add","icon":"add","link":"/en/crm/company/add/"}]},
-            #         {"title":"Contact persons","icon":"contacts","link":"/en/crm/contact/","actions":[{"title":"Add","icon":"add","link":"/en/crm/contact/add/"}]},
-            #         {"title":"Countries","icon":"public","link":"/en/crm/country/","actions":[{"title":"Add","icon":"add","link":"/en/crm/country/add/"}]},
-            #         {"title":"Currencies","icon":"payments","link":"/en/crm/currency/","actions":[{"title":"Add","icon":"add","link":"/en/crm/currency/add/"}]},
-            #         {"title":"Currency rates","icon":"trending_up","link":"/en/crm/rate/","actions":[{"title":"Add","icon":"add","link":"/en/crm/rate/add/"}]},
-            #         {"title":"Deals","icon":"handshake","link":"/en/crm/deal/","actions":[{"title":"Add","icon":"add","link":"/en/crm/deal/add/"}]},
-            #         {"title":"Emails in CRM","icon":"mail","link":"/en/crm/crmemail/","actions":[{"title":"Add","icon":"add","link":"/en/crm/crmemail/add/"}]},
-            #         {"title":"Industries of Clients","icon":"factory","link":"/en/crm/industry/","actions":[{"title":"Add","icon":"add","link":"/en/crm/industry/add/"}]},
-            #         {"title":"Lead Sources","icon":"source","link":"/en/crm/leadsource/","actions":[{"title":"Add","icon":"add","link":"/en/crm/leadsource/add/"}]},
-            #         {"title":"Leads","icon":"assignment","link":"/en/crm/lead/","actions":[{"title":"Add","icon":"add","link":"/en/crm/lead/add/"}]},
-            #         {"title":"Payments","icon":"attach_money","link":"/en/crm/payment/","actions":[{"title":"Add","icon":"add","link":"/en/crm/payment/add/"}]},
-            #         {"title":"Product categories","icon":"category","link":"/en/crm/productcategory/","actions":[{"title":"Add","icon":"add","link":"/en/crm/productcategory/add/"}]},
-            #         {"title":"Products","icon":"inventory","link":"/en/crm/product/","actions":[{"title":"Add","icon":"add","link":"/en/crm/product/add/"}]},
-            #         {"title":"Requests","icon":"help","link":"/en/crm/request/","actions":[{"title":"Add","icon":"add","link":"/en/crm/request/add/"}]},
-            #         {"title":"Shipments","icon":"local_shipping","link":"/en/crm/shipment/","actions":[{"title":"Add","icon":"add","link":"/en/crm/shipment/add/"}]},
-            #         {"title":"Stages","icon":"timeline","link":"/en/crm/stage/","actions":[{"title":"Add","icon":"add","link":"/en/crm/stage/add/"}]},
-            #         {"title":"Tags","icon":"sell","link":"/en/crm/tag/","actions":[{"title":"Add","icon":"add","link":"/en/crm/tag/add/"}]},
-            #         {"title":"Types of Clients","icon":"groups","link":"/en/crm/clienttype/","actions":[{"title":"Add","icon":"add","link":"/en/crm/clienttype/add/"}]},
+            #         {"title":"Cities","icon":"location_city","link":"/en/admin/crm/city/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/city/add/"}]},
+            #         {"title":"Closing reasons","icon":"cancel","link":"/en/admin/crm/closingreason/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/closingreason/add/"}]},
+            #         {"title":"Companies","icon":"business","link":"/en/admin/crm/company/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/company/add/"}]},
+            #         {"title":"Contact persons","icon":"contacts","link":"/en/admin/crm/contact/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/contact/add/"}]},
+            #         {"title":"Countries","icon":"public","link":"/en/admin/crm/country/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/country/add/"}]},
+            #         {"title":"Currencies","icon":"payments","link":"/en/admin/crm/currency/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/currency/add/"}]},
+            #         {"title":"Currency rates","icon":"trending_up","link":"/en/admin/crm/rate/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/rate/add/"}]},
+            #         {"title":"Deals","icon":"handshake","link":"/en/admin/crm/deal/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/deal/add/"}]},
+            #         {"title":"Emails in CRM","icon":"mail","link":"/en/admin/crm/crmemail/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/crmemail/add/"}]},
+            #         {"title":"Industries of Clients","icon":"factory","link":"/en/admin/crm/industry/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/industry/add/"}]},
+            #         {"title":"Lead Sources","icon":"source","link":"/en/admin/crm/leadsource/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/leadsource/add/"}]},
+            #         {"title":"Leads","icon":"assignment","link":"/en/admin/crm/lead/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/lead/add/"}]},
+            #         {"title":"Payments","icon":"attach_money","link":"/en/admin/crm/payment/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/payment/add/"}]},
+            #         {"title":"Product categories","icon":"category","link":"/en/admin/crm/productcategory/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/productcategory/add/"}]},
+            #         {"title":"Products","icon":"inventory","link":"/en/admin/crm/product/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/product/add/"}]},
+            #         {"title":"Requests","icon":"help","link":"/en/admin/crm/request/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/request/add/"}]},
+            #         {"title":"Shipments","icon":"local_shipping","link":"/en/admin/crm/shipment/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/shipment/add/"}]},
+            #         {"title":"Stages","icon":"timeline","link":"/en/admin/crm/stage/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/stage/add/"}]},
+            #         {"title":"Tags","icon":"sell","link":"/en/admin/crm/tag/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/tag/add/"}]},
+            #         {"title":"Types of Clients","icon":"groups","link":"/en/admin/crm/clienttype/","actions":[{"title":"Add","icon":"add","link":"/en/admin/crm/clienttype/add/"}]},
             #     ],
             # },
             #
@@ -600,8 +600,8 @@ UNFOLD = {
             #     "collapsible": True,
             #     "collapsed": True,
             #     "items": [
-            #         {"title":"Help pages","icon":"help_center","link":"/en/help/page/","actions":[{"title":"Add","icon":"add","link":"/en/help/page/add/"}]},
-            #         {"title":"Paragraphs","icon":"description","link":"/en/help/paragraph/","actions":[{"title":"Add","icon":"add","link":"/en/help/paragraph/add/"}]},
+            #         {"title":"Help pages","icon":"help_center","link":"/en/admin/help/page/","actions":[{"title":"Add","icon":"add","link":"/en/admin/help/page/add/"}]},
+            #         {"title":"Paragraphs","icon":"description","link":"/en/admin/help/paragraph/","actions":[{"title":"Add","icon":"add","link":"/en/admin/help/paragraph/add/"}]},
             #     ],
             # },
 
@@ -614,12 +614,12 @@ UNFOLD = {
                 "collapsible": False,
                 "collapsed": False,
                 "items": [
-                    {"title":"Email Accounts","icon":"alternate_email","link":"/en/massmail/emailaccount/","actions":[{"title":"Add","icon":"add","link":"/en/massmail/emailaccount/add/"}]},
-                    {"title":"Email Messages","icon":"mail","link":"/en/massmail/emlmessage/","actions":[{"title":"Add","icon":"add","link":"/en/massmail/emlmessage/add/"}]},
-                    {"title":"Eml accounts queues","icon":"queue","link":"/en/massmail/emlaccountsqueue/","actions":[{"title":"Add","icon":"add","link":"/en/massmail/emlaccountsqueue/add/"}]},
-                    {"title":"Mailing Outs","icon":"outbox","link":"/en/massmail/mailingout/","actions":[{"title":"Add","icon":"add","link":"/en/massmail/mailingout/add/"}]},
-                    {"title":"Mass contacts","icon":"people","link":"/en/massmail/masscontact/","actions":[{"title":"Add","icon":"add","link":"/en/massmail/masscontact/add/"}]},
-                    {"title":"Signatures","icon":"draw","link":"/en/massmail/signature/","actions":[{"title":"Add","icon":"add","link":"/en/massmail/signature/add/"}]},
+                    {"title":"Email Accounts","icon":"alternate_email","link":"/en/admin/massmail/emailaccount/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/emailaccount/add/"}]},
+                    {"title":"Email Messages","icon":"mail","link":"/en/admin/massmail/emlmessage/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/emlmessage/add/"}]},
+                    {"title":"Eml accounts queues","icon":"queue","link":"/en/admin/massmail/emlaccountsqueue/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/emlaccountsqueue/add/"}]},
+                    {"title":"Mailing Outs","icon":"outbox","link":"/en/admin/massmail/mailingout/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/mailingout/add/"}]},
+                    {"title":"Mass contacts","icon":"people","link":"/en/admin/massmail/masscontact/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/masscontact/add/"}]},
+                    {"title":"Signatures","icon":"draw","link":"/en/admin/massmail/signature/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/signature/add/"}]},
                 ],
             },
 
@@ -632,11 +632,11 @@ UNFOLD = {
             #     "collapsible": True,
             #     "collapsed": True,
             #     "items": [
-            #         {"title":"Banned company names","icon":"block","link":"/en/settings/bannedcompanyname/","actions":[{"title":"Add","icon":"add","link":"/en/settings/bannedcompanyname/add/"}]},
-            #         {"title":"Massmail Settings","icon":"settings","link":"/en/settings/massmailsettings/","actions":[{"title":"Add","icon":"add","link":"/en/settings/massmailsettings/add/"}]},
-            #         {"title":"Public email domains","icon":"public","link":"/en/settings/publicemaildomain/","actions":[{"title":"Add","icon":"add","link":"/en/settings/publicemaildomain/add/"}]},
-            #         {"title":"Reminder settings","icon":"alarm_on","link":"/en/settings/reminders/","actions":[{"title":"Add","icon":"add","link":"/en/settings/reminders/add/"}]},
-            #         {"title":"Stop Phrases","icon":"stop","link":"/en/settings/stopphrase/","actions":[{"title":"Add","icon":"add","link":"/en/settings/stopphrase/add/"}]},
+            #         {"title":"Banned company names","icon":"block","link":"/en/admin/settings/bannedcompanyname/","actions":[{"title":"Add","icon":"add","link":"/en/admin/settings/bannedcompanyname/add/"}]},
+            #         {"title":"Massmail Settings","icon":"settings","link":"/en/admin/settings/massmailsettings/","actions":[{"title":"Add","icon":"add","link":"/en/admin/settings/massmailsettings/add/"}]},
+            #         {"title":"Public email domains","icon":"public","link":"/en/admin/settings/publicemaildomain/","actions":[{"title":"Add","icon":"add","link":"/en/admin/settings/publicemaildomain/add/"}]},
+            #         {"title":"Reminder settings","icon":"alarm_on","link":"/en/admin/settings/reminders/","actions":[{"title":"Add","icon":"add","link":"/en/admin/settings/reminders/add/"}]},
+            #         {"title":"Stop Phrases","icon":"stop","link":"/en/admin/settings/stopphrase/","actions":[{"title":"Add","icon":"add","link":"/en/admin/settings/stopphrase/add/"}]},
             #     ],
             # },
             #
@@ -649,7 +649,7 @@ UNFOLD = {
             #     "collapsible": True,
             #     "collapsed": True,
             #     "items": [
-            #         {"title":"Sites","icon":"language","link":"/en/sites/site/","actions":[{"title":"Add","icon":"add","link":"/en/sites/site/add/"}]},
+            #         {"title":"Sites","icon":"language","link":"/en/admin/sites/site/","actions":[{"title":"Add","icon":"add","link":"/en/admin/sites/site/add/"}]},
             #     ],
             # },
             #
@@ -662,13 +662,13 @@ UNFOLD = {
             #     "collapsible": True,
             #     "collapsed": True,
             #     "items": [
-            #         {"title":"Memos","icon":"sticky_note_2","link":"/en/tasks/memo/","actions":[{"title":"Add","icon":"add","link":"/en/tasks/memo/add/"}]},
-            #         {"title":"Project stages","icon":"layers","link":"/en/tasks/projectstage/","actions":[{"title":"Add","icon":"add","link":"/en/tasks/projectstage/add/"}]},
-            #         {"title":"Projects","icon":"folder_open","link":"/en/tasks/project/","actions":[{"title":"Add","icon":"add","link":"/en/tasks/project/add/"}]},
-            #         {"title":"Resolutions","icon":"check_circle","link":"/en/tasks/resolution/","actions":[{"title":"Add","icon":"add","link":"/en/tasks/resolution/add/"}]},
-            #         {"title":"Tags","icon":"sell","link":"/en/tasks/tag/","actions":[{"title":"Add","icon":"add","link":"/en/tasks/tag/add/"}]},
-            #         {"title":"Task stages","icon":"timeline","link":"/en/tasks/taskstage/","actions":[{"title":"Add","icon":"add","link":"/en/tasks/taskstage/add/"}]},
-            #         {"title":"Tasks","icon":"task","link":"/en/tasks/task/","actions":[{"title":"Add","icon":"add","link":"/en/tasks/task/add/"}]},
+            #         {"title":"Memos","icon":"sticky_note_2","link":"/en/admin/tasks/memo/","actions":[{"title":"Add","icon":"add","link":"/en/admin/tasks/memo/add/"}]},
+            #         {"title":"Project stages","icon":"layers","link":"/en/admin/tasks/projectstage/","actions":[{"title":"Add","icon":"add","link":"/en/admin/tasks/projectstage/add/"}]},
+            #         {"title":"Projects","icon":"folder_open","link":"/en/admin/tasks/project/","actions":[{"title":"Add","icon":"add","link":"/en/admin/tasks/project/add/"}]},
+            #         {"title":"Resolutions","icon":"check_circle","link":"/en/admin/tasks/resolution/","actions":[{"title":"Add","icon":"add","link":"/en/admin/tasks/resolution/add/"}]},
+            #         {"title":"Tags","icon":"sell","link":"/en/admin/tasks/tag/","actions":[{"title":"Add","icon":"add","link":"/en/admin/tasks/tag/add/"}]},
+            #         {"title":"Task stages","icon":"timeline","link":"/en/admin/tasks/taskstage/","actions":[{"title":"Add","icon":"add","link":"/en/admin/tasks/taskstage/add/"}]},
+            #         {"title":"Tasks","icon":"task","link":"/en/admin/tasks/task/","actions":[{"title":"Add","icon":"add","link":"/en/admin/tasks/task/add/"}]},
             #     ],
             # },
             #
@@ -681,7 +681,7 @@ UNFOLD = {
             #     "collapsible": True,
             #     "collapsed": True,
             #     "items": [
-            #         {"title":"Connections","icon":"call","link":"/en/voip/connection/","actions":[{"title":"Add","icon":"add","link":"/en/voip/connection/add/"}]},
+            #         {"title":"Connections","icon":"call","link":"/en/admin/voip/connection/","actions":[{"title":"Add","icon":"add","link":"/en/admin/voip/connection/add/"}]},
             #     ],
             # },
 
@@ -703,12 +703,12 @@ UNFOLD = {
     #             # For filtered tabs, use plain strings (no reverse_lazy + concat)
     #             {
     #                 "title": _("Open"),
-    #                 "link": "/en/tasks/task/?status__exact=open",
+    #                 "link": "/en/admin/tasks/task/?status__exact=open",
     #                 "permission": "webcrm.settings.tabs_permission",
     #             },
     #             {
     #                 "title": _("Completed"),
-    #                 "link": "/en/tasks/task/?status__exact=done",
+    #                 "link": "/en/admin/tasks/task/?status__exact=done",
     #                 "permission": "webcrm.settings.tabs_permission",
     #             },
     #         ],
