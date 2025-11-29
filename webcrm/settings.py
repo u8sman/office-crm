@@ -156,6 +156,8 @@ MIDDLEWARE = [
     "common.utils.usermiddleware.UserMiddleware",
 ]
 
+LOGIN_REDIRECT_URL = "/en/admin/"
+
 
 ROOT_URLCONF = "webcrm.urls"
 
