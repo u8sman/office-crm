@@ -230,7 +230,7 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 # For more security, replace the url prefixes
 # with your own unique value.
 SECRET_CRM_PREFIX = "crm-user/"
-SECRET_ADMIN_PREFIX = ""
+SECRET_ADMIN_PREFIX = "admin/"
 SECRET_LOGIN_PREFIX = "login/"
 
 # Specify ip of host to avoid importing emails sent by CRM
