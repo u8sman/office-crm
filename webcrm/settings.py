@@ -143,7 +143,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    # "django.middleware.cache.UpdateCacheMiddleware",  # cache whole-page (optional)
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",    # for static on Render
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -155,36 +154,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "common.utils.admin_redirect_middleware.AdminRedirectMiddleware",
     "common.utils.usermiddleware.UserMiddleware",
-    # "django.middleware.cache.FetchFromCacheMiddleware",
 ]
 
-# # Cache middleware config
-# CACHE_MIDDLEWARE_SECONDS = env.int("CACHE_MIDDLEWARE_SECONDS", default=60)
-# CACHE_MIDDLEWARE_KEY_PREFIX = env("CACHE_MIDDLEWARE_KEY_PREFIX", default="crm")
-#
-# # ---- CACHES (Upstash Redis with safety) ---- #
-# redis_url_raw = env("UPSTASH_REDIS_URL", default="")
-# # Remove possible wrapping quotes from Render/env
-# redis_url = redis_url_raw.strip().strip('"').strip("'")
-#
-# if redis_url.startswith(("redis://", "rediss://", "unix://")):
-#     CACHES = {
-#         "default": {
-#             "BACKEND": "django_redis.cache.RedisCache",
-#             "LOCATION": redis_url,  # e.g. redis://default:token@host:6379
-#             "OPTIONS": {
-#                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#             },
-#         }
-#     }
-# else:
-#     # Safety fallback so the app still works if env is wrong
-#     CACHES = {
-#         "default": {
-#             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-#             "LOCATION": "crm-fallback-locmem",
-#         }
-#     }
 
 ROOT_URLCONF = "webcrm.urls"
 
