@@ -261,3 +261,46 @@ details[data-filter-title] .justify-row:first-child + .justify-row + .justify-ro
     font-size: 0.7rem;
     color: var(--form-text-muted);
 }
+
+
+/* Login page tweaks */
+body.login {
+    /* Background gradient or image */
+    background: linear-gradient(135deg, #0f172a, #1d4ed8);
+}
+
+/* The login card */
+body.login .sm\:w-96 {
+    border-radius: 12px;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+    background: rgba(15, 23, 42, 0.96); /* nice dark card */
+}
+
+/* Title "CRM" */
+body.login h1 .text-primary-600 {
+    font-size: 26px;
+    letter-spacing: 0.05em;
+}
+
+/* Inputs */
+body.login input[type="text"],
+body.login input[type="password"] {
+    border-radius: 8px;
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    padding: 0.6rem 0.8rem;
+}
+
+/* Login button */
+body.login button[type="submit"] {
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+/* Make icon slide a bit more :) */
+body.login button[type="submit"] .material-symbols-outlined {
+    transition: transform 150ms ease-out;
+}
+
+body.login button[type="submit"]:hover .material-symbols-outlined {
+    transform: translateX(4px);
+}
