@@ -196,11 +196,10 @@ MEDIA_ROOT = BASE_DIR / "media"
 # WhiteNoise – efficient static serving on Render
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# Local-only extra static folders
-if DEBUG:
-    STATICFILES_DIRS = [
-        BASE_DIR / "static_custom",
-    ]
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static_custom",
+]
 
 FIXTURE_DIRS = ["tests/fixtures"]
 
