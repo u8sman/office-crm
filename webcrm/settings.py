@@ -407,7 +407,7 @@ UNFOLD = {
             "title": _("Report Bug"),
             "link": "https://docs.google.com/spreadsheets/d/1i-PzJvntcrRcWIXhLE5Hzgvxc8FRC62oRhdcR5HygB4/edit?gid=292726321#gid=292726321",
             # On newer Unfold versions you can also do:
-            # "attrs": {"target": "_blank"},
+            "attrs": {"target": "_blank"},
         },
     ],
 

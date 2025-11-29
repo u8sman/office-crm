@@ -71,7 +71,6 @@ class EmailAccountAdmin(emailaccountadmin.EmailAccountAdmin):
             {
                 "fields": (
                     ("owner", "co_owner", "modified_by"),
-                    "department",
                     ("creation_date", "update_date"),
                 )
             },
