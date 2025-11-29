@@ -30,8 +30,8 @@
         /* ================= Overlay (transparent dark) ================= */
 
         #htmx-loader {
-            background: rgba(30, 41, 59, 0.80);   /* base-900/80 */
-            backdrop-filter: blur(2px);          /* blur-xs */
+            background: rgba(30, 41, 59, 0.80);
+            backdrop-filter: blur(2px);
             -webkit-backdrop-filter: blur(2px);
         }
 
@@ -66,7 +66,7 @@
             aspect-ratio: 1 / 1;
             border-radius: 50%;
             animation: loader-rotate 2s linear infinite;
-            animation-play-state: paused;     /* PAUSED until request happens */
+            animation-play-state: paused;
             z-index: 0;
         }
 
@@ -99,7 +99,7 @@
             opacity: 0.4;
             transform: translateY(0);
             animation: loader-letter-anim 2s infinite;
-            animation-play-state: paused;   /* PAUSED until request happens */
+            animation-play-state: paused;
             z-index: 1;
             margin: 0 1px;
         }
@@ -121,8 +121,6 @@
             40%      { opacity: 0.7; transform: translateY(0); }
         }
 
-        /* ================= HTMX triggers loader ================= */
-
         #htmx-loader.htmx-request {
             opacity: 1 !important;
             pointer-events: auto !important;
@@ -138,11 +136,13 @@
     <div
         id="page"
         class="flex max-w-full min-h-screen {% element_classes 'page' %}"
-        hx-boost="true"
-        hx-target="#content"
-        hx-select="#content"
-        hx-push-url="true"
-        hx-indicator="#htmx-loader"
+        {% if not is_popup %}
+            hx-boost="true"
+            hx-target="#main"
+            hx-select="#main"
+            hx-push-url="true"
+            hx-indicator="#htmx-loader"
+        {% endif %}
     >
         {% if not is_popup and is_nav_sidebar_enabled %}
             {% block nav-sidebar %}
@@ -154,7 +154,6 @@
 
             {% include "unfold/helpers/header.html" %}
 
-            {# messages block #}
             {% block messages %}
                 <div class="px-4">
                     <div id="messages-container" class="mx-auto {% if not cl.model_admin.list_fullwidth %}container{% endif %}">
@@ -188,14 +187,12 @@
     {# ================= SCRIPTS ================= #}
 
     <script>
-        /* CSRF helper */
         function getCookie(name) {
             const value = "; " + document.cookie;
             const parts = value.split("; " + name + "=");
             return parts.length === 2 ? parts.pop().split(";").shift() : null;
         }
 
-        /* Attach CSRF to HTMX POST/PUT/DELETE */
         document.body.addEventListener("htmx:configRequest", function (event) {
             const method = (event.detail.verb || "GET").toUpperCase();
             if (method !== "GET" && method !== "HEAD") {
@@ -206,9 +203,7 @@
             }
         });
 
-        /* Only alert-based error handling — no Django messages */
         document.body.addEventListener("htmx:responseError", function (event) {
-
             const xhr = event.detail.xhr || {};
             const status = xhr.status || "";
             const statusText = xhr.statusText || "";
@@ -238,15 +233,13 @@ ${detail || "No additional information available."}`
     </script>
 
     <script>
-        // Make all EXTERNAL links open in a new tab
+        // External links in new tab
         document.addEventListener("click", function (e) {
             const a = e.target.closest("a");
             if (!a) return;
 
-            // Ignore if already set to open in new tab
             if (a.target === "_blank") return;
 
-            // Ignore htmx boosted or specific admin links
             if (a.hasAttribute("hx-get") ||
                 a.hasAttribute("hx-post") ||
                 a.hasAttribute("hx-patch") ||
@@ -257,10 +250,7 @@ ${detail || "No additional information available."}`
                 return;
             }
 
-            // Build absolute URL for comparison
             const url = new URL(a.href, window.location.origin);
-
-            // Check if the link domain matches current domain
             const isExternal = url.origin !== window.location.origin;
 
             if (isExternal) {
@@ -271,9 +261,8 @@ ${detail || "No additional information available."}`
     </script>
 
     <script>
-        // Keep sidebar "active" state in sync with SPA navigation (Unfold-style)
+        // Sidebar active state
         (function () {
-            // Classes Unfold uses for the active menu link
             const ACTIVE_CLASSES = [
                 "bg-base-100",
                 "font-semibold",
@@ -286,7 +275,7 @@ ${detail || "No additional information available."}`
                 try {
                     const url = new URL(href, window.location.origin);
                     let path = url.pathname || "/";
-                    path = path.replace(/\/+$/, ""); // trim trailing slash
+                    path = path.replace(/\/+$/, "");
                     if (path === "") path = "/";
                     return path;
                 } catch (e) {
@@ -303,11 +292,8 @@ ${detail || "No additional information available."}`
                 let bestLink = null;
                 let bestLen = -1;
 
-                // Find the best-matching link for current URL
                 links.forEach(function (a) {
                     const hrefPath = normalizePath(a.href);
-
-                    // match exact changelist URLs and nested detail URLs
                     const isMatch =
                         currentPath === hrefPath ||
                         currentPath.startsWith(hrefPath + "/");
@@ -318,14 +304,12 @@ ${detail || "No additional information available."}`
                     }
                 });
 
-                // Remove active classes from ALL links
                 links.forEach(function (a) {
                     ACTIVE_CLASSES.forEach(function (cls) {
                         a.classList.remove(cls);
                     });
                 });
 
-                // Add active classes only to the selected link
                 if (bestLink) {
                     ACTIVE_CLASSES.forEach(function (cls) {
                         bestLink.classList.add(cls);
@@ -333,19 +317,185 @@ ${detail || "No additional information available."}`
                 }
             }
 
-            // On first page load
             document.addEventListener("DOMContentLoaded", updateNavActive);
 
-            // After htmx swaps the main content (SPA navigation)
             document.body.addEventListener("htmx:afterSwap", function (event) {
-                if (event.detail && event.detail.target && event.detail.target.id === "content") {
+                const t = event.detail && event.detail.target;
+                if (t && t.id === "main") {
                     updateNavActive();
                 }
             });
 
-            // When user uses browser back/forward (hx-push-url)
             window.addEventListener("popstate", updateNavActive);
         })();
     </script>
+
+    {# ==== IMPORTANT: disable HTMX boost on Django popup links ==== #}
+        <script>
+            (function () {
+                function markPopupLinks(root) {
+                    const container = root || document;
+                    const links = container.querySelectorAll('a[href*="_popup=1"]');
+                    links.forEach(function (a) {
+                        // Disable htmx boost on popup links so Django's popup JS works
+                        a.setAttribute("hx-boost", "false");
+                    });
+                }
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    markPopupLinks(document);
+                });
+
+                document.body.addEventListener("htmx:afterSwap", function (event) {
+                    // Re-apply to any new content swapped into the page
+                    markPopupLinks(event.target || document);
+                });
+            })();
+        </script>
+
+    <script>
+(function () {
+    // Generic SPA navigation helper
+    function spaNavigate(url) {
+        const loader = document.getElementById("htmx-loader");
+
+        // Show fullscreen loader ONLY for these SPA navigations
+        if (loader) {
+            loader.classList.add("htmx-request");
+        }
+
+        if (typeof htmx !== "undefined" && htmx.ajax) {
+            // Remove loader when this specific swap finishes or errors
+            function clearLoaderOnce() {
+                if (loader) {
+                    loader.classList.remove("htmx-request");
+                }
+                document.body.removeEventListener("htmx:afterSwap", clearLoaderOnce);
+                document.body.removeEventListener("htmx:responseError", clearLoaderOnce);
+            }
+
+            document.body.addEventListener("htmx:afterSwap", clearLoaderOnce);
+            document.body.addEventListener("htmx:responseError", clearLoaderOnce);
+
+            htmx.ajax("GET", url, {
+                target: "#main",
+                select: "#main",
+                swap: "innerHTML",
+                pushUrl: true
+            });
+        } else {
+            // Fallback: full page navigation (browser handles loading)
+            window.location.href = url;
+        }
+    }
+
+    // Helper: close Unfold command palette modal & backdrop
+    function closeCommandPalette() {
+        // 1) Let Alpine/Unfold do its normal ESC handling
+        document.dispatchEvent(
+            new KeyboardEvent("keydown", {
+                key: "Escape",
+                code: "Escape",
+                keyCode: 27,
+                which: 27,
+                bubbles: true
+            })
+        );
+
+        // 2) Force-hide the Alpine root that has the backdrop + modal
+        setTimeout(function () {
+            // Your wrapper: <div x-data="searchCommand()" x-show="openCommandResults" ...>
+            const commandRoot = document.querySelector('[x-data="searchCommand()"]');
+            if (commandRoot) {
+                commandRoot.classList.add("hidden");
+                commandRoot.style.display = "none";
+            }
+
+            // Inner white card (just in case)
+            const input = document.getElementById("search-input-command");
+            if (input) {
+                const modalCard = input.closest(".bg-white");
+                if (modalCard) {
+                    modalCard.classList.add("hidden");
+                    modalCard.style.display = "none";
+                }
+            }
+        }, 0);
+    }
+
+    // Expose in case you want to call it elsewhere
+    window.closeCommandPalette = closeCommandPalette;
+
+    // 1) Override Unfold's sidebar search dropdown with SPA-aware version
+    window.searchDropdown = function () {
+        return {
+            openSearchResults: false,
+            currentIndex: 0,
+
+            applyShortcut(event) {
+                // ignore when typing in inputs/textareas/contentEditable
+                const target = event.target;
+                const tag = target.tagName ? target.tagName.toLowerCase() : "";
+                if (tag === "input" || tag === "textarea" || target.isContentEditable) {
+                    return;
+                }
+
+                // same idea as Unfold: focus search on "t"
+                if (event.key === "t" && !event.ctrlKey && !event.metaKey && !event.altKey) {
+                    event.preventDefault();
+                    const input = document.getElementById("nav-filter");
+                    if (input) {
+                        input.focus();
+                        this.openSearchResults = true;
+                        this.currentIndex = 0;
+                    }
+                }
+            },
+
+            nextItem() {
+                const items = this._getItems();
+                if (!items.length) return;
+                this.currentIndex = (this.currentIndex + 1) % items.length;
+            },
+
+            prevItem() {
+                const items = this._getItems();
+                if (!items.length) return;
+                this.currentIndex = (this.currentIndex - 1 + items.length) % items.length;
+            },
+
+            _getItems() {
+                const nodes = document.querySelectorAll("#search-results a[href]");
+                return Array.from(nodes);
+            },
+
+            selectItem() {
+                const items = this._getItems();
+                if (!items.length) return;
+
+                let index = this.currentIndex;
+                if (index < 0 || index >= items.length) {
+                    index = 0;
+                }
+
+                const link = items[index];
+                const url = link.href;
+
+                this.openSearchResults = false;
+                spaNavigate(url);
+            }
+        };
+    };
+
+    // 2) Global SPA handler for command palette click
+    window.__spaCommandClick = function (url, addHistory) {
+        // Always treat the URL as a normal SPA navigation,
+        // even if it contains _popup=1.
+        closeCommandPalette();
+        spaNavigate(url);
+    };
+})();
+</script>
+
 
 {% endblock %}

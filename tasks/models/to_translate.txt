@@ -10,3 +10,6 @@
 {% translate "for consideration" %}
 {% translate "for information" %}
 {% translate "for the record" %}
+
+{% translate "test" %}
+{% translate "tets" %}
