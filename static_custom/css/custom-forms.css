@@ -679,3 +679,91 @@ form .aligned div.help {
         order: 1;
     }
 }
+
+
+/* Container spacing */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li {
+    margin-right: 8px;
+}
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li:last-child {
+    margin-right: 0;
+}
+
+/* Base primary button style */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 14px;
+    min-height: 32px;          /* 🔹 ensures same height for all buttons */
+    line-height: 1;            /* tighter, consistent vertical alignment */
+
+    background: var(--color-primary-600, #4f46e5);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    text-decoration: none;
+    gap: 6px;
+
+    border: 1px solid transparent;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: background 150ms ease, box-shadow 150ms ease, transform 120ms ease;
+}
+
+/* Hover state */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a:hover {
+    background: var(--color-primary-500, #6366f1);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    transform: translateY(-1px);
+}
+
+/* Hide the old <i class="material-icons"> icons */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a i {
+    display: none;
+}
+
+/* Make room for new icon on the left */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a {
+    padding-left: 30px;   /* space for icon */
+}
+
+/* Base style for all Material Symbols pseudo-icons */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a::before {
+    font-family: "Material Symbols Outlined";
+    font-size: 18px;
+    line-height: 1;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);   /* 🔹 centers icon vertically */
+}
+
+/* --- Per-button icons using Material Symbols ligatures --- */
+
+/* Send a test */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a[href*="send-test"]::before {
+    content: "send";
+}
+
+/* Copy message */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a[href*="copy-message"]::before {
+    content: "content_copy";
+}
+
+/* View uploaded images */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a[onclick*="show-uploaded-images"]::before {
+    content: "visibility";
+}
+
+/* Upload image */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a[onclick*="pic-upload"]::before {
+    content: "file_upload";
+}
+
+/* History link */
+ul.flex.flex-col.font-medium.mb-4.ml-auto.mt-2.md\:flex-row li a.historylink::before {
+    content: "history";
+}
