@@ -123,6 +123,8 @@ INSTALLED_APPS = [
     "unfold.contrib.location_field",
     "unfold.contrib.constance",
 
+    "adminsortable2",
+
     "django.contrib.sites",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -140,6 +142,8 @@ INSTALLED_APPS = [
     "voip",
     "common.apps.CommonConfig",
     "settings",
+
+    "menu",
 ]
 
 MIDDLEWARE = [
@@ -172,6 +176,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+
+                # our dynamic sidebar (put it near the end so it overrides)
+                "menu.context_processors.unfold_dynamic_sidebar",
             ],
         },
     },
@@ -414,26 +421,26 @@ UNFOLD = {
         "show_all_applications": True,   # hide auto-generated Django sidebar
         "navigation": [
 
-            {
-                "title": _("Shortcuts"),
-                "items": [
-                    {
-                        "title": _("Basecamp Tasks"),
-                        "icon": "task_alt",
-                        "link": "https://office.power-devs.com/",
-                        "new_window": True,
-                    },
-                    {
-                        "title": _("Report Bug"),
-                        "icon": "bug_report",
-                        "link": "https://docs.google.com/spreadsheets/d/1i-PzJvntcrRcWIXhLE5Hzgvxc8FRC62oRhdcR5HygB4/edit?gid=292726321#gid=292726321",
-                        "new_window": True,
-                    },
-                ],
-            },
-
-
-            # # -----------------------------
+            # {
+            #     "title": _("Shortcuts"),
+            #     "items": [
+            #         {
+            #             "title": _("Basecamp Tasks"),
+            #             "icon": "task_alt",
+            #             "link": "https://office.power-devs.com/",
+            #             "new_window": True,
+            #         },
+            #         {
+            #             "title": _("Report Bug"),
+            #             "icon": "bug_report",
+            #             "link": "https://docs.google.com/spreadsheets/d/1i-PzJvntcrRcWIXhLE5Hzgvxc8FRC62oRhdcR5HygB4/edit?gid=292726321#gid=292726321",
+            #             "new_window": True,
+            #         },
+            #     ],
+            # },
+            #
+            #
+            # # # -----------------------------
             # # Administration
             # # -----------------------------
             # {
@@ -602,25 +609,25 @@ UNFOLD = {
             #         {"title":"Paragraphs","icon":"description","link":"/en/admin/help/paragraph/","actions":[{"title":"Add","icon":"add","link":"/en/admin/help/paragraph/add/"}]},
             #     ],
             # },
-
+            #
             # -----------------------------
             # Mass mail
             # -----------------------------
-            {
-                "title": "Mass mail",
-                "separator": True,
-                "collapsible": False,
-                "collapsed": False,
-                "items": [
-                    {"title":"Email Accounts","icon":"alternate_email","link":"/en/admin/massmail/emailaccount/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/emailaccount/add/"}]},
-                    {"title":"Email Messages","icon":"mail","link":"/en/admin/massmail/emlmessage/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/emlmessage/add/"}]},
-                    {"title":"Eml accounts queues","icon":"queue","link":"/en/admin/massmail/emlaccountsqueue/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/emlaccountsqueue/add/"}]},
-                    {"title":"Mailing Outs","icon":"outbox","link":"/en/admin/massmail/mailingout/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/mailingout/add/"}]},
-                    {"title":"Mass contacts","icon":"people","link":"/en/admin/massmail/masscontact/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/masscontact/add/"}]},
-                    {"title":"Signatures","icon":"draw","link":"/en/admin/massmail/signature/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/signature/add/"}]},
-                ],
-            },
-
+            # {
+            #     "title": "Mass mail",
+            #     "separator": True,
+            #     "collapsible": False,
+            #     "collapsed": False,
+            #     "items": [
+            #         {"title":"Email Accounts","icon":"alternate_email","link":"/en/admin/massmail/emailaccount/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/emailaccount/add/"}]},
+            #         {"title":"Email Messages","icon":"mail","link":"/en/admin/massmail/emlmessage/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/emlmessage/add/"}]},
+            #         {"title":"Eml accounts queues","icon":"queue","link":"/en/admin/massmail/emlaccountsqueue/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/emlaccountsqueue/add/"}]},
+            #         {"title":"Mailing Outs","icon":"outbox","link":"/en/admin/massmail/mailingout/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/mailingout/add/"}]},
+            #         {"title":"Mass contacts","icon":"people","link":"/en/admin/massmail/masscontact/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/masscontact/add/"}]},
+            #         {"title":"Signatures","icon":"draw","link":"/en/admin/massmail/signature/","actions":[{"title":"Add","icon":"add","link":"/en/admin/massmail/signature/add/"}]},
+            #     ],
+            # },
+            #
             # # -----------------------------
             # # Settings
             # # -----------------------------

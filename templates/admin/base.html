@@ -136,7 +136,8 @@
     <div
         id="page"
         class="flex max-w-full min-h-screen {% element_classes 'page' %}"
-        {% if not is_popup %}
+        {# IMPORTANT: only SPA-boost on changelists (cl), not change forms (opts only) #}
+        {% if not is_popup and cl %}
             hx-boost="true"
             hx-target="#main"
             hx-select="#main"
@@ -346,6 +347,11 @@ ${detail || "No additional information available."}`
                 const t = event.detail && event.detail.target;
                 if (t && t.id === "main") {
                     updateNavActive();
+
+                    // Re-init Alpine/Unfold on the swapped content
+                    if (window.Alpine && typeof window.Alpine.initTree === "function") {
+                        window.Alpine.initTree(t);
+                    }
                 }
             });
 
@@ -354,171 +360,194 @@ ${detail || "No additional information available."}`
     </script>
 
     {# ==== IMPORTANT: disable HTMX boost on Django popup links ==== #}
-        <script>
-            (function () {
-                function markPopupLinks(root) {
-                    const container = root || document;
-                    const links = container.querySelectorAll('a[href*="_popup=1"]');
-                    links.forEach(function (a) {
-                        // Disable htmx boost on popup links so Django's popup JS works
-                        a.setAttribute("hx-boost", "false");
-                    });
-                }
-
-                document.addEventListener("DOMContentLoaded", function () {
-                    markPopupLinks(document);
+    <script>
+        (function () {
+            function markPopupLinks(root) {
+                const container = root || document;
+                const links = container.querySelectorAll('a[href*="_popup=1"]');
+                links.forEach(function (a) {
+                    // Disable htmx boost on popup links so Django's popup JS works
+                    a.setAttribute("hx-boost", "false");
                 });
+            }
 
-                document.body.addEventListener("htmx:afterSwap", function (event) {
-                    // Re-apply to any new content swapped into the page
-                    markPopupLinks(event.target || document);
-                });
-            })();
-        </script>
+            document.addEventListener("DOMContentLoaded", function () {
+                markPopupLinks(document);
+            });
+
+            document.body.addEventListener("htmx:afterSwap", function (event) {
+                // Re-apply to any new content swapped into the page
+                markPopupLinks(event.target || document);
+            });
+        })();
+    </script>
 
     <script>
-(function () {
-    // Generic SPA navigation helper
-    function spaNavigate(url) {
-        const loader = document.getElementById("htmx-loader");
+    (function () {
+        // Generic SPA navigation helper
+        function spaNavigate(url) {
+            let urlObj;
+            try {
+                urlObj = new URL(url, window.location.origin);
+            } catch (e) {
+                // Fallback if URL is weird
+                window.location.href = url;
+                return;
+            }
 
-        // Show fullscreen loader ONLY for these SPA navigations
-        if (loader) {
-            loader.classList.add("htmx-request");
+            const pathname = urlObj.pathname || "";
+
+            // IMPORTANT:
+            // For admin *forms* (add/change/delete), we force a full page load
+            // so Django inlines & Unfold behave normally.
+            const isAdmin = pathname.startsWith("/admin/");
+            const isFormLike =
+                pathname.includes("/add/") ||
+                /\/\d+\/(change|delete)?\/?$/.test(pathname);
+
+            if (isAdmin && isFormLike) {
+                window.location.href = urlObj.href;
+                return;
+            }
+
+            const loader = document.getElementById("htmx-loader");
+
+            // Show fullscreen loader ONLY for SPA navigations
+            if (loader) {
+                loader.classList.add("htmx-request");
+            }
+
+            if (typeof htmx !== "undefined" && htmx.ajax) {
+                // Remove loader when this specific swap finishes or errors
+                function clearLoaderOnce() {
+                    if (loader) {
+                        loader.classList.remove("htmx-request");
+                    }
+                    document.body.removeEventListener("htmx:afterSwap", clearLoaderOnce);
+                    document.body.removeEventListener("htmx:responseError", clearLoaderOnce);
+                }
+
+                document.body.addEventListener("htmx:afterSwap", clearLoaderOnce);
+                document.body.addEventListener("htmx:responseError", clearLoaderOnce);
+
+                htmx.ajax("GET", urlObj.href, {
+                    target: "#main",
+                    select: "#main",
+                    swap: "innerHTML",
+                    pushUrl: true
+                });
+            } else {
+                // Fallback: full page navigation (browser handles loading)
+                window.location.href = urlObj.href;
+            }
         }
 
-        if (typeof htmx !== "undefined" && htmx.ajax) {
-            // Remove loader when this specific swap finishes or errors
-            function clearLoaderOnce() {
-                if (loader) {
-                    loader.classList.remove("htmx-request");
-                }
-                document.body.removeEventListener("htmx:afterSwap", clearLoaderOnce);
-                document.body.removeEventListener("htmx:responseError", clearLoaderOnce);
-            }
+        // Helper: close Unfold command palette modal & backdrop
+        function closeCommandPalette() {
+            // 1) Let Alpine/Unfold do its normal ESC handling
+            document.dispatchEvent(
+                new KeyboardEvent("keydown", {
+                    key: "Escape",
+                    code: "Escape",
+                    keyCode: 27,
+                    which: 27,
+                    bubbles: true
+                })
+            );
 
-            document.body.addEventListener("htmx:afterSwap", clearLoaderOnce);
-            document.body.addEventListener("htmx:responseError", clearLoaderOnce);
-
-            htmx.ajax("GET", url, {
-                target: "#main",
-                select: "#main",
-                swap: "innerHTML",
-                pushUrl: true
-            });
-        } else {
-            // Fallback: full page navigation (browser handles loading)
-            window.location.href = url;
-        }
-    }
-
-    // Helper: close Unfold command palette modal & backdrop
-    function closeCommandPalette() {
-        // 1) Let Alpine/Unfold do its normal ESC handling
-        document.dispatchEvent(
-            new KeyboardEvent("keydown", {
-                key: "Escape",
-                code: "Escape",
-                keyCode: 27,
-                which: 27,
-                bubbles: true
-            })
-        );
-
-        // 2) Force-hide the Alpine root that has the backdrop + modal
-        setTimeout(function () {
-            // Your wrapper: <div x-data="searchCommand()" x-show="openCommandResults" ...>
-            const commandRoot = document.querySelector('[x-data="searchCommand()"]');
-            if (commandRoot) {
-                commandRoot.classList.add("hidden");
-                commandRoot.style.display = "none";
-            }
-
-            // Inner white card (just in case)
-            const input = document.getElementById("search-input-command");
-            if (input) {
-                const modalCard = input.closest(".bg-white");
-                if (modalCard) {
-                    modalCard.classList.add("hidden");
-                    modalCard.style.display = "none";
-                }
-            }
-        }, 0);
-    }
-
-    // Expose in case you want to call it elsewhere
-    window.closeCommandPalette = closeCommandPalette;
-
-    // 1) Override Unfold's sidebar search dropdown with SPA-aware version
-    window.searchDropdown = function () {
-        return {
-            openSearchResults: false,
-            currentIndex: 0,
-
-            applyShortcut(event) {
-                // ignore when typing in inputs/textareas/contentEditable
-                const target = event.target;
-                const tag = target.tagName ? target.tagName.toLowerCase() : "";
-                if (tag === "input" || tag === "textarea" || target.isContentEditable) {
-                    return;
+            // 2) Force-hide the Alpine root that has the backdrop + modal
+            setTimeout(function () {
+                // Your wrapper: <div x-data="searchCommand()" x-show="openCommandResults" ...>
+                const commandRoot = document.querySelector('[x-data="searchCommand()"]');
+                if (commandRoot) {
+                    commandRoot.classList.add("hidden");
+                    commandRoot.style.display = "none";
                 }
 
-                // same idea as Unfold: focus search on "t"
-                if (event.key === "t" && !event.ctrlKey && !event.metaKey && !event.altKey) {
-                    event.preventDefault();
-                    const input = document.getElementById("nav-filter");
-                    if (input) {
-                        input.focus();
-                        this.openSearchResults = true;
-                        this.currentIndex = 0;
+                // Inner white card (just in case)
+                const input = document.getElementById("search-input-command");
+                if (input) {
+                    const modalCard = input.closest(".bg-white");
+                    if (modalCard) {
+                        modalCard.classList.add("hidden");
+                        modalCard.style.display = "none";
                     }
                 }
-            },
+            }, 0);
+        }
 
-            nextItem() {
-                const items = this._getItems();
-                if (!items.length) return;
-                this.currentIndex = (this.currentIndex + 1) % items.length;
-            },
+        // Expose in case you want to call it elsewhere
+        window.closeCommandPalette = closeCommandPalette;
 
-            prevItem() {
-                const items = this._getItems();
-                if (!items.length) return;
-                this.currentIndex = (this.currentIndex - 1 + items.length) % items.length;
-            },
+        // 1) Override Unfold's sidebar search dropdown with SPA-aware version
+        window.searchDropdown = function () {
+            return {
+                openSearchResults: false,
+                currentIndex: 0,
 
-            _getItems() {
-                const nodes = document.querySelectorAll("#search-results a[href]");
-                return Array.from(nodes);
-            },
+                applyShortcut(event) {
+                    // ignore when typing in inputs/textareas/contentEditable
+                    const target = event.target;
+                    const tag = target.tagName ? target.tagName.toLowerCase() : "";
+                    if (tag === "input" || tag === "textarea" || target.isContentEditable) {
+                        return;
+                    }
 
-            selectItem() {
-                const items = this._getItems();
-                if (!items.length) return;
+                    // same idea as Unfold: focus search on "t"
+                    if (event.key === "t" && !event.ctrlKey && !event.metaKey && !event.altKey) {
+                        event.preventDefault();
+                        const input = document.getElementById("nav-filter");
+                        if (input) {
+                            input.focus();
+                            this.openSearchResults = true;
+                            this.currentIndex = 0;
+                        }
+                    }
+                },
 
-                let index = this.currentIndex;
-                if (index < 0 || index >= items.length) {
-                    index = 0;
+                nextItem() {
+                    const items = this._getItems();
+                    if (!items.length) return;
+                    this.currentIndex = (this.currentIndex + 1) % items.length;
+                },
+
+                prevItem() {
+                    const items = this._getItems();
+                    if (!items.length) return;
+                    this.currentIndex = (this.currentIndex - 1 + items.length) % items.length;
+                },
+
+                _getItems() {
+                    const nodes = document.querySelectorAll("#search-results a[href]");
+                    return Array.from(nodes);
+                },
+
+                selectItem() {
+                    const items = this._getItems();
+                    if (!items.length) return;
+
+                    let index = this.currentIndex;
+                    if (index < 0 || index >= items.length) {
+                        index = 0;
+                    }
+
+                    const link = items[index];
+                    const url = link.href;
+
+                    this.openSearchResults = false;
+                    spaNavigate(url);
                 }
-
-                const link = items[index];
-                const url = link.href;
-
-                this.openSearchResults = false;
-                spaNavigate(url);
-            }
+            };
         };
-    };
 
-    // 2) Global SPA handler for command palette click
-    window.__spaCommandClick = function (url, addHistory) {
-        // Always treat the URL as a normal SPA navigation,
-        // even if it contains _popup=1.
-        closeCommandPalette();
-        spaNavigate(url);
-    };
-})();
-</script>
-
+        // 2) Global SPA handler for command palette click
+        window.__spaCommandClick = function (url, addHistory) {
+            // Always treat the URL as a normal SPA navigation helper,
+            // but spaNavigate will decide if it should be full load.
+            closeCommandPalette();
+            spaNavigate(url);
+        };
+    })();
+    </script>
 
 {% endblock %}
